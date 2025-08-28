@@ -37,6 +37,7 @@ div {
 }
 
 img {
+    display: inline-block;
   image-rendering: pixelated;
   pointer-events: none;
 }
