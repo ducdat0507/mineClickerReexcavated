@@ -11,6 +11,11 @@
     src:url(fonts/ms_sans_serif_bold.woff) format("woff");
 }
 
+* {
+    touch-action: manipulation;
+    -webkit-touch-action: manipulation;
+}
+
 body {
 	font-family: "Pixelated MS Sans Serif", Arial;
 	background-color: #111;
@@ -57,8 +62,6 @@ button:hover {
 	background-image: url('texture1.png');
 	background-size: 100%;
 	overflow: hidden;
-	touch-action: manipulation;
-    -webkit-touch-action: manipulation;
 }
 
 #sectionLevel {
