@@ -45,8 +45,11 @@ img {
 button {
 	margin-left: 1vh;
 	font-size: 2.5vh;
-	height: 3vh;
 	color: #444;
+}
+
+button, button:not(:disabled):active {
+	padding: 1vh 1.5vh;
 }
 
 button:hover {
@@ -377,9 +380,9 @@ button:hover {
 
 .upgrade {
 	position: absolute;
-	transform: translate(-50%, -50%);
 	width: 9vh;
 	height: 9vh;
+	margin: -4.5vh;
 	background-size: 100% 100%;
 }
 
@@ -387,6 +390,24 @@ button:hover {
 	cursor: pointer;
 }
 
+.upgrade.selected {
+	z-index: 1;
+}
+.upgrade.can-buy {
+	animation: 1s ease-out infinite can-buy;
+}
+
+@keyframes can-buy {
+	0% {
+		transform: translateY(0);
+	}
+	10% {
+		transform: translateY(-0.2em);
+	}
+	20% {
+		transform: translateY(0);
+	}
+}
 
 #upgradeInfo {
 	position: absolute;

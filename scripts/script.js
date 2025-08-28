@@ -302,6 +302,9 @@ function calculateDamage() {
 }
 
 function mineOre() {
+	let critChance = getUpgradeEffect("normal", 14);
+	let damage = game.activeDamage;
+	if (Math.random() < critChance) damage *= 5;
 	dealDamage(game.activeDamage);
 }
 
@@ -317,7 +320,7 @@ function dealDamage(damage) {
 		let chance = getUpgradeEffect("normal", 3)
 		while (stack < getUpgradeEffect("normal", 9) && game.level >= 30 && Math.random() < chance) {
 			factor *= 5
-			chance /= 2
+			chance *= 1 - getUpgradeEffect("normal", 13);
 			stack++;
 		}
 
@@ -371,7 +374,7 @@ function updateCurrencies() {
 	document.getElementById("toolScreenCash").innerHTML = getToolCurrency(currentTool)
 
 	if (document.getElementById("upgradeScreen").style.left == "0px") updateUpgrades();
-	if (document.getElementById("artifactScreen").style.left == "0px") updateAscensionGain();
+	if (document.getElementById("ascensionScreen").style.left == "0px") updateAscensionGain();
 }
 
 function flash(target, color = "#8f8") {
@@ -650,7 +653,7 @@ function ascend() {
 	game.ascensionCash = 0
 	game.unlockedOres = 1
 	game.currentTool = 1
-	game.currentCompanion = 1
+	game.currentCompanion = getUpgradeEffect("normal", 16) + 1
 	game.artifacts = 0
 	game.artifactChance = 0.05
 	game.artifactBoost = 0
@@ -711,8 +714,12 @@ function updateUpgrades() {
 		upgradeButtons[id].style.display = visible ? "" : "none";
 		if (!visible) continue;
 
+		let selected = selectedUpgrade[0] == "normal" && selectedUpgrade[1] == id;
+		upgradeButtons[id].classList.toggle("selected", selected);
 		let unlocked = data.req();
-		upgradeButtons[id].style.filter = unlocked ? "" : "invert(30%)";
+		upgradeButtons[id].style.filter = 
+			(selected ? "drop-shadow(0 0 1vh white)" : "")
+			+ (unlocked ? "" : " invert(30%)");
 		if (!unlocked) continue;
 
 		let amount = game.upgradesBought["normal"]?.[id] ?? 0;
@@ -755,6 +762,7 @@ function displayUpgrade(type, x) {
 		document.getElementById("upgradeInfo").innerHTML = "<b>Locked upgrade</b>"
 		document.getElementById("upgradeButton").innerHTML = "Unlocks at " + upgrade.reqDisplay + "!"
 	}
+	updateUpgrades();
 }
 
 function buyUpgrade() {
@@ -777,6 +785,8 @@ function buyUpgrade() {
 		if (type == "normal" && id == 2)         calculateDamage()
 		if (type == "normal" && id == 10)        calculateDamage()
 		else if (type == "normal" && id == 4)    game.artifactChance = getUpgradeEffect("normal", 4)
+
+		updateUpgrades();
 	}
 }
 
@@ -872,8 +882,11 @@ function timePlayedUp() {
 
 	if (game.level >= 5) {
 		tapTimer += timePlayedDiff * game.tapSpeed;
+		let critChance = getUpgradeEffect("normal", 15)
 		while (tapTimer > 1) {
-			dealDamage(game.idleDamage);
+			let damage = game.idleDamage;
+			if (Math.random() < critChance) damage *= 25;
+			dealDamage(damage);
 			tapTimer--;
 		}
 	}
