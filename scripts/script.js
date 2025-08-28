@@ -24,6 +24,7 @@ function reset() {
 		artifacts: 0,
 		artifactChance: 0.05,
 		artifactBoost: 0,
+		artifactUsed: 0,
 		ascensionPoints: 0,
 		ascensionCash: 0,
 		gameFinished: false,
@@ -159,6 +160,13 @@ function formatSig(x, digits = 2) {
 	})
 }
 
+function formatWhole(x, digits = 2) {
+	return x.toLocaleString("en-US", {
+		minimumFractionDigits: digits,
+		maximumFractionDigits: digits,
+	})
+}
+
 function changeNumberFormat() {
 	if (game.numberFormat == "standard") {
 		game.numberFormat = "standardLong"
@@ -205,25 +213,32 @@ function loadOre(x) {
 	document.getElementById("maxHitPoints").innerHTML = format(currentHitPoints)
 	document.getElementById("currentHardness").innerHTML = format(stats.hardness)
 
-	let damage = Math.max(game.activeDamage - stats.hardness, 0)
+	{
+		let {damage, income} = calculateOreDamage(x, game.activeDamage, [
+			[getUpgradeEffect("normal", 14), 5]
+		]);
 
-	document.getElementById("currentDamage").innerHTML = format(damage)
-	document.getElementById("currentNetGain").innerHTML = "$" + format(stats.value / Math.ceil(stats.hitPoints / damage))
+		document.getElementById("currentDamage").innerHTML = format(damage)
+		document.getElementById("currentNetGain").innerHTML = "$" + format(income)
 
-	document.getElementById("currentDamage").style.color = 
-	document.getElementById("currentNetGain").style.color = damage > 0 ? "" : "#f44"
-
-	damage = Math.max(game.idleDamage - stats.hardness, 0)
-
-	if (game.level > 5) {
-		document.getElementById("currentIdleDamage").innerHTML = format(damage * game.tapSpeed)
-		document.getElementById("currentIdleGain").innerHTML = "$" + format(stats.value / Math.ceil(stats.hitPoints / damage) * game.tapSpeed)
-		document.getElementById("currentIdle").style.display = "";
-	} else {
-		document.getElementById("currentIdle").style.display = "none";
+		document.getElementById("currentDamage").style.color = 
+		document.getElementById("currentNetGain").style.color = damage > 0 ? "" : "#f44";
 	}
-	document.getElementById("currentIdleDamage").style.color = 
-	document.getElementById("currentIdleGain").style.color = damage > 0 ? "" : "#f44"
+	{
+		let {damage, income} = calculateOreDamage(x, game.idleDamage, [
+			[getUpgradeEffect("normal", 15), 25]
+		]);
+
+		if (game.level > 5) {
+			document.getElementById("currentIdleDamage").innerHTML = format(damage * game.tapSpeed)
+			document.getElementById("currentIdleGain").innerHTML = "$" + format(income * game.tapSpeed)
+			document.getElementById("currentIdle").style.display = "";
+		} else {
+			document.getElementById("currentIdle").style.display = "none";
+		}
+		document.getElementById("currentIdleDamage").style.color = 
+		document.getElementById("currentIdleGain").style.color = damage > 0 ? "" : "#f44"
+	}
 
 	currentLayer = 1
 	while (x>=layerPoints[currentLayer]) currentLayer++
@@ -252,6 +267,22 @@ function loadOre(x) {
 }
 
 loadOre(1)
+
+function calculateOreDamage(ore, damage, critList = []) {
+	let stats = getOreStats(ore);
+	critList.unshift([1, 1]);
+	let result = {
+		damage: 0,
+		income: 0,
+	}
+	for (let i = 0; i < critList.length; i++) {
+		let chance = critList[i][0] - (+critList[i+1]?.[0] || 0)
+		let thisDamage = Math.max(damage * critList[i][1] - stats.hardness, 0)
+		result.damage += thisDamage * chance;
+		result.income += stats.value / Math.ceil(stats.hitPoints / thisDamage) * chance;
+	}
+	return result;
+}
 
 function nextOre() {
 	currentOre++
@@ -559,6 +590,7 @@ function upgradeTool () {
 
 		game.currentTool++
 		game.artifactBoost = 0
+		game.artifactUsed = 0
 
 		loadToolScreenInfo()
 		calculateDamage()
@@ -590,12 +622,15 @@ function closeArtifactScreen() {
 function useArtifact() {
 	let count = Math.min(getUpgradeEffect("normal", 11), game.artifacts);
 	if (count > 0) {
+		let multi = getUpgradeEffect("normal", 5);
 		game.artifacts -= count;
+		game.artifactUsed += count;
 		let maxBoost = getUpgradeEffect("normal", 6)
 		let artifactBoost = 5 * Math.random() * (10 + (1 / Math.random() * (Math.random() * (count - 1) * 2 + 1)))
 		if (artifactBoost > maxBoost ** 0.5) artifactBoost = (artifactBoost * maxBoost ** 0.5) ** 0.5
+		artifactBoost += getUpgradeEffect("normal", 19) * game.artifactUsed / multi;
 		if (artifactBoost > maxBoost) artifactBoost = maxBoost;
-		artifactBoost *= getUpgradeEffect("normal", 5);
+		artifactBoost *= multi;
 
 		if (artifactBoost > game.artifactBoost) {
 			game.artifactBoost = artifactBoost
@@ -652,7 +687,7 @@ function ascend() {
 	game.cash = 0
 	game.ascensionCash = 0
 	game.unlockedOres = 1
-	game.currentTool = 1
+	game.currentTool = getUpgradeEffect("normal", 17) + 1
 	game.currentCompanion = getUpgradeEffect("normal", 16) + 1
 	game.artifacts = 0
 	game.artifactChance = 0.05
