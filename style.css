@@ -15,7 +15,8 @@ body {
 	font-family: "Pixelated MS Sans Serif", Arial;
 	background-color: #111;
 	image-rendering: pixelated;
-	touch-action: manipulate;
+	touch-action: manipulation;
+    -webkit-touch-action: manipulation;
 	-webkit-tap-highlight-color: transparent; /*Hopefully removes the blue box over the images when you tap them*/
 }
 
