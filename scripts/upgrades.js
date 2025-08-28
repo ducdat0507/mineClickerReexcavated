@@ -124,7 +124,7 @@ const upgrades = {
             effectDisplay: x => format(x),
             req: () => game.level >= 500,
             reqDisplay: "Level 500",
-            cost: x => 1e12 * 100000 ** x,
+            cost: x => 1e12 * 1000 ** x,
         },
         13: {
             row: 3, col: 1,
@@ -148,7 +148,7 @@ const upgrades = {
             visible: () => game.ascensionPoints >= 400,
             req: () => game.level >= 850,
             reqDisplay: "Level 850",
-            cost: x => 1000000 * 1000 ** x,
+            cost: x => 1000000 * 100 ** x,
         },
         15: {
             row: 0, col: -2,
@@ -159,7 +159,7 @@ const upgrades = {
             visible: () => game.ascensionPoints >= 400,
             req: () => game.level >= 1000,
             reqDisplay: "Level 1,000",
-            cost: x => 1000000000 * 1000000 ** x,
+            cost: x => 1000000000 * 10000 ** x,
         },
         16: {
             row: 4, col: 0,
