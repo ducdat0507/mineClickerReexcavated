@@ -369,6 +369,9 @@ function updateCurrencies() {
 	document.getElementById("artifactHolder").style.display = game.level >= 10 && game.artifacts > 0 ? "" : "none";
 	
 	document.getElementById("toolScreenCash").innerHTML = getToolCurrency(currentTool)
+
+	if (document.getElementById("upgradeScreen").style.left == "0px") updateUpgrades();
+	if (document.getElementById("artifactScreen").style.left == "0px") updateAscensionGain();
 }
 
 function flash(target, color = "#8f8") {
@@ -611,14 +614,18 @@ function openAscensionScreen() {
 		document.getElementById("ascensionScreen").style.left = "0"
 		document.getElementById("artifactScreen").style.left = "100%"
 		document.getElementById("ascensionPoints").innerHTML = format(game.ascensionPoints)
-		let ascensionPointsToGet = Math.floor(game.ascensionCash ** 0.12 * 5)
-		ascensionPointsToGet = ascensionPointsToGet * getUpgradeEffect("normal", 7)
-		ascensionPointsToGet = Math.max(ascensionPointsToGet - game.ascensionPoints, 0)
-		document.getElementById("ascensionPointsToGet").innerHTML = format(ascensionPointsToGet)
-		let nextAscensionPoint = (game.ascensionPoints + ascensionPointsToGet + 1) / getUpgradeEffect("normal", 7)
-		nextAscensionPoint = Math.floor((nextAscensionPoint / 5) ** (1/0.12))
-		document.getElementById("nextAscensionPoint").innerHTML = "$" + format(nextAscensionPoint)
+		updateAscensionGain();
 	}
+}
+
+function updateAscensionGain() {
+	let ascensionPointsToGet = Math.floor(game.ascensionCash ** 0.12 * 5)
+	ascensionPointsToGet = ascensionPointsToGet * getUpgradeEffect("normal", 7)
+	ascensionPointsToGet = Math.max(ascensionPointsToGet - game.ascensionPoints, 0)
+	document.getElementById("ascensionPointsToGet").innerHTML = format(ascensionPointsToGet)
+	let nextAscensionPoint = (game.ascensionPoints + ascensionPointsToGet + 1) / getUpgradeEffect("normal", 7)
+	nextAscensionPoint = Math.floor((nextAscensionPoint / 5) ** (1/0.12))
+	document.getElementById("nextAscensionPoint").innerHTML = "$" + format(nextAscensionPoint)
 }
 
 function closeAscensionScreen() {
@@ -670,10 +677,16 @@ function openUpgradeScreen() {
 
 	document.getElementById("upgradeHolder").innerHTML = "";
 
+	updateUpgrades();
+
+	displayUpgrade(selectedUpgrade[0], selectedUpgrade[1])
+}
+
+let upgradeButtons = {};
+
+function initUpgrades() {
 	for (let id in upgrades["normal"]) {
 		let data = upgrades["normal"][id];
-		
-		if (data.visible?.() === false) return;
 
 		let upg = document.createElement("div");
 
@@ -681,15 +694,33 @@ function openUpgradeScreen() {
 
 		upg.style.top = (data.row * 10 + 15) + "vh";
 		upg.style.left = "calc(50% + " + (data.col * 10) + "vh)";
-		upg.style.filter = data.req() ? "" : "invert(30%)";
 		upg.style.backgroundImage = "url('upgrades/" + "normal" + "/" + id + ".png')";
 
 		upg.onclick = () => displayUpgrade("normal", id);
-		
+
+		upgradeButtons[id] = upg;
 		document.getElementById("upgradeHolder").appendChild(upg);
 	}
+}
+function updateUpgrades() {
+	if (!document.getElementById("upgradeHolder").childElementCount) initUpgrades();
+	for (let id in upgrades["normal"]) {
+		let data = upgrades["normal"][id];
 
-	displayUpgrade(selectedUpgrade[0], selectedUpgrade[1])
+		let visible = data.visible?.() ?? true;
+		upgradeButtons[id].style.display = visible ? "" : "none";
+		if (!visible) continue;
+
+		let unlocked = data.req();
+		upgradeButtons[id].style.filter = unlocked ? "" : "invert(30%)";
+		if (!unlocked) continue;
+
+		let amount = game.upgradesBought["normal"]?.[id] ?? 0;
+		let cost = data.cost(amount);
+		let costType = data.costType || "cash";
+		let canBuy = game[costType] >= cost;
+		upgradeButtons[id].classList.toggle("can-buy", canBuy);
+	}
 }
 
 function closeUpgradeScreen() {
@@ -714,7 +745,11 @@ function displayUpgrade(type, x) {
 		document.getElementById("upgradeInfo").innerHTML = "<b>" + upgrade.title + "</b><br>" + 
 			upgrade.effectDisplay(upgrade.effect(amount)) + " -> " + upgrade.effectDisplay(upgrade.effect(amount + 1)) + "<br>" + 
 			upgrade.desc;
-		document.getElementById("upgradeButton").innerHTML = "Buy for $" + format(upgrade.cost(amount));
+		document.getElementById("upgradeButton").innerHTML = (
+			upgrade.costType
+			 	? "Buy for " + format(upgrade.cost(amount)) + " " + upgrade.costType
+			 	: "Buy for $" + format(upgrade.cost(amount))
+		);
 	} else {
 		selectedUpgrade = 0
 		document.getElementById("upgradeInfo").innerHTML = "<b>Locked upgrade</b>"
@@ -725,11 +760,12 @@ function displayUpgrade(type, x) {
 function buyUpgrade() {
 	let [type, id] = selectedUpgrade;
 	let upgrade = upgrades[type]?.[id];
-	if (!upgrade) return;
+	if (!upgrade || !upgrade.req()) return;
 	let amount = game.upgradesBought[type]?.[id] ?? 0;
 	let cost = upgrade.cost(amount);
-	if (game.cash >= cost) {
-		game.cash -= cost;
+	let costType = upgrade.costType || "cash";
+	if (game[costType] >= cost) {
+		game[costType] -= cost;
 
 		updateCurrencies()
 

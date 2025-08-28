@@ -69,7 +69,8 @@ const upgrades = {
             visible: () => game.ascensionPoints > 0,
             req: () => game.ascensionPoints >= 100,
             reqDisplay: "100 AP",
-            cost: x => 1e12 * 25 ** x,
+            cost: x => 1250 * 1.2 ** x,
+            costType: "artifacts",
             keepOn: ["ascension"],
         },
         8: {
@@ -81,7 +82,8 @@ const upgrades = {
             visible: () => game.ascensionPoints > 0,
             req: () => game.ascensionPoints >= 200,
             reqDisplay: "200 AP",
-            cost: x => 2e10 * 10 ** x,
+            cost: x => 2000 * 1.25 ** x,
+            costType: "artifacts",
             keepOn: ["ascension"],
         },
         9: {
@@ -123,6 +125,19 @@ const upgrades = {
             req: () => game.level >= 500,
             reqDisplay: "Level 500",
             cost: x => 1e12 * 100000 ** x,
+        },
+        13: {
+            row: 3, col: 1,
+            title: "Exploding ore",
+            desc: "Decrease ore duplicating change decay",
+            effect: x => 0.5 * 0.95 ** x,
+            effectDisplay: x => x < 0.1 ? "/" + format(1 / x) : format(x * 100) + "%",
+            visible: () => game.ascensionPoints > 0,
+            req: () => game.ascensionPoints >= 400,
+            reqDisplay: "400 AP",
+            cost: x => 5000 * 1.25 ** x,
+            costType: "artifacts",
+            keepOn: ["ascension"],
         },
     }
 }
