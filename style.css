@@ -15,8 +15,6 @@ body {
 	font-family: "Pixelated MS Sans Serif", Arial;
 	background-color: #111;
 	image-rendering: pixelated;
-	touch-action: manipulation;
-    -webkit-touch-action: manipulation;
 	-webkit-tap-highlight-color: transparent; /*Hopefully removes the blue box over the images when you tap them*/
 }
 
@@ -59,6 +57,8 @@ button:hover {
 	background-image: url('texture1.png');
 	background-size: 100%;
 	overflow: hidden;
+	touch-action: manipulation;
+    -webkit-touch-action: manipulation;
 }
 
 #sectionLevel {
