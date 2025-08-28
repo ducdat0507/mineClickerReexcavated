@@ -305,7 +305,7 @@ function mineOre() {
 	let critChance = getUpgradeEffect("normal", 14);
 	let damage = game.activeDamage;
 	if (Math.random() < critChance) damage *= 5;
-	dealDamage(game.activeDamage);
+	dealDamage(damage);
 }
 
 function dealDamage(damage) {
