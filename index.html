@@ -93,8 +93,14 @@
 			
 			<div id="ascensionScreen">
 				<p style="color: #b8f">You have <span id="ascensionPoints">0</span> ascension points (AP)</p>
-				<div id="ascendButton" onclick="confirmAscension()">Ascend and gain<br><b><span id="ascensionPointsToGet">0</span> AP</b><br>Next at <span id="nextAscensionPoint">$0</span></div>
-				<p id="ascensionScreenCashText">You have made <span id="ascensionScreenCash">$0</span> this Ascension<br>Ascension will reset your tool and upgrades in exchange for AP. Each AP gives a 1% boost to damage.</p>
+				<div id="ascendButton" onclick="confirmAscension()">Ascend and gain<br><b><span id="ascensionPointsToGet">0</span> AP</b></div>
+				<p id="ascensionScreenCashText">
+					Next at <br>
+					<span id="ascensionScreenCash">$0</span> / <span id="nextAscensionPoint">$0</span><br/>
+					total cash <br><br>
+					Ascension will reset your tool and upgrades in exchange for AP. Each AP gives a 1% boost to damage.
+				</p>
+				<div id="reincarnationTabButton" onclick="openReincarnationScreen()">Reincarnation</div>
 				<div class="bottomButtons">
 					<div class="bottomButton" onclick="closeAscensionScreen()">Back</div>
 				</div>
@@ -108,17 +114,59 @@
 				</center><br>
 			</div>
 			
+			<div id="reincarnationScreen">
+				<p style="color: #3ff; text-shadow: 0 0 0.5vw white;">You have <span id="minerSouls">0</span> miner's souls</p>
+				<table id="minerSoulBreakdown">
+					<caption>Soul collection rate</caption>
+					<tbody id="minerSoulBreakdownBody"></tbody>
+					<tfoot>
+						<tr>
+							<th scope="row">Final rate</th>
+							<td id="minerSoulRate"></td>
+						</tr>
+					</tfoot>
+				</table>
+				<p id="reincarnationText" style="margin:1em .5em">
+					Reincarnation will reset everything below in exchange for miner's souls. Use miner's souls for powerful upgrades on the Upgrades tab.
+				</p>
+				<div id="reincarnateButton" onclick="confirmReincarnation()">Reincarnate and gain<br><b><span id="minerSoulsToGet">0</span> miner's souls</b></div>
+				<div class="bottomButtons">
+					<div class="bottomButton" onclick="closeReincarnationScreen()">Back</div>
+				</div>
+			</div>
+			
+			<div id="reincarnationConfirmation">
+				<p style="color: #ddd">Are you sure you want to reincarnate?</p>
+				<center>
+					<button onclick="reincarnate()">Yes</button>
+					<button onclick="cancelReincarnation()">No</button>
+				</center><br>
+			</div>
+			
 			<div id="gameFinishScreen">
 				<p style="color: #ffb">Congrats! You have transcended and beaten the game!</p>
-				<p style="font-size: 2vh">However, you can continue playing if you like. Higher levels of transcendence await you...</p>
+				<p style="font-size: 2vh">However, it is yet to be the end of the journey...</p>
+				<p style="font-size: 2vh">(check the ASC tab)</p>
 				<center>
 					<button onclick="document.getElementById('gameFinishScreen').style.display = 'none'">Okay</button>
 				</center><br>
 			</div>
 			
 			<div id="upgradeScreen">
-				<p id="upgradeScreenCashText" style="color: #333; margin-left: 0; margin-right: 0">You have <span id="upgradeScreenCash">$0</span></p>
-				<div id="upgradeHolder"></div>
+				<div id="upgradeHolder">
+					<div id="upgradeHolder_normal">
+						<p style="color: #333; margin: .6em">
+							You have <span id="upgradeScreenCash">$0</span>
+							<span id="upgradeArtifactHolder"><br>and <span id="upgradeScreenArtifacts">0</span> artifacts</span>
+						</p>
+					</div>
+					<div id="upgradeHolder_reincarnation" style="--page: 1">
+						<p style="color: #3ff; text-shadow: 0 0 0.5vw white; margin: .6em">
+							You have <span id="upgradeScreenMinerSouls">0</span> miner's souls
+							<br>(earned <span id="upgradeScreenMinerSoulTotal">0</span> total)
+						</p>
+					</div>
+				</div>
 				<div id="upgradeInfo">Tap an upgrade for info</div>
 				<div id="upgradeButton" onclick="buyUpgrade()">Tap an upgrade for info</div>
 				<div class="bottomButtons">
@@ -146,8 +194,21 @@
 			</div>
 		</div>
 
-		<script src="scripts/constants.js"></script>
+		<script src="scripts/data/constants.js"></script>
+		<script src="scripts/data/upgrades.js"></script>
+
+		<script src="scripts/artifact.js"></script>
+		<script src="scripts/ascension.js"></script>
+		<script src="scripts/format.js"></script>
+		<script src="scripts/main.js"></script>
+		<script src="scripts/ore.js"></script>
+		<script src="scripts/reincarnation.js"></script>
+		<script src="scripts/settings.js"></script>
+		<script src="scripts/stats.js"></script>
+		<script src="scripts/storage.js"></script>
+		<script src="scripts/tool.js"></script>
+		<script src="scripts/ui.js"></script>
 		<script src="scripts/upgrades.js"></script>
-		<script src="scripts/script.js"></script>
+		<script src="scripts/utils.js"></script>
   </body>
 </html>

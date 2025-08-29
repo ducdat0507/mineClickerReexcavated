@@ -1,259 +1,155 @@
-const upgrades = {
-    normal: {
-        1: {
-            row: 1, col: -1,
-            title: "Sharper touches",
-            desc: "Increase damage per tap",
-            effect: x => 0.15 * (x ** 1.5) + 1,
-            effectDisplay: x => format(x * 100) + "%",
-            req: () => game.level >= 5,
-            reqDisplay: "Level 5",
-            cost: x => 500 * 3 ** x,
-        },
-        2: {
-            row: 1, col: -2,
-            title: "Stronger companions",
-            desc: "Increase damage per second",
-            effect: x => 0.3 * (x ** 1.5) + 1,
-            effectDisplay: x => format(x * 100) + "%",
-            req: () => game.level >= 10,
-            reqDisplay: "Level 10",
-            cost: x => 50000 * 5 ** x,
-        },
-        3: {
-            row: 1, col: 1,
-            title: "Duplication glitch",
-            desc: "Chance to 5x an ore's cash value",
-            effect: x => x * 0.05,
-            effectDisplay: x => format(x * 100) + "%",
-            req: () => game.level >= 50,
-            reqDisplay: "Level 50",
-            cost: x => 1e7 * 5 ** x,
-        },
-        4: {
-            row: 2, col: -2,
-            title: "Artifact detector",
-            desc: "Increase artifact drop chance",
-            effect: x => x * 0.01 + 0.05,
-            effectDisplay: x => format(x * 100) + "%",
-            req: () => game.level >= 15,
-            reqDisplay: "Level 15",
-            cost: x => 100000 * 5 ** x,
-        },
-        5: {
-            row: 2, col: -1,
-            title: "Artifact blessing",
-            desc: "Increase artifact gilding multiplier",
-            effect: x => 0.15 * (x ** 1.4) + 1,
-            effectDisplay: x => format(x * 100) + "%",
-            req: () => game.level >= 20,
-            reqDisplay: "Level 20",
-            cost: x => 1e6 * 4 ** x,
-        },
-        6: {
-            row: 2, col: 0,
-            title: "Artifact luck",
-            desc: "Increase maximum artifact gilding limit",
-            effect: x => 250 + 15 * x,
-            effectDisplay: x => format(x) + "%",
-            req: () => game.level >= 30,
-            reqDisplay: "Level 30",
-            cost: x => 7777777 * 7 ** x,
-        },
-        7: {
-            row: 3, col: -1,
-            title: "Bribe the gods",
-            desc: "Increase AP gain",
-            effect: x => 0.15 * (x ** 1.4) + 1,
-            effectDisplay: x => format(x * 100) + "%",
-            visible: () => game.ascensionPoints > 0,
-            req: () => game.ascensionPoints >= 100,
-            reqDisplay: "100 AP",
-            cost: x => 1250 * 1.5 ** x,
-            costType: "artifacts",
-            keepOn: ["ascension"],
-        },
-        8: {
-            row: 3, col: 0,
-            title: "Money distribution",
-            desc: "Decrease tool upgrade cost",
-            effect: x => 0.8 ** x,
-            effectDisplay: x => x < 0.1 ? "/" + format(1 / x) : format(x * 100) + "%",
-            visible: () => game.ascensionPoints > 0,
-            req: () => game.ascensionPoints >= 200,
-            reqDisplay: "200 AP",
-            cost: x => 800 * 1.25 ** x,
-            costType: "artifacts",
-            keepOn: ["ascension"],
-        },
-        9: {
-            row: 1, col: 2,
-            title: "Super duplication",
-            desc: "Increase ore duplication stack limit<br/>(Chance decays for each duplication)",
-            effect: x => x + 1,
-            effectDisplay: x => format(x) + "x",
-            req: () => game.level >= 150,
-            reqDisplay: "Level 150",
-            cost: x => 1e9 * 100 ** x,
-        },
-        10: {
-            row: 1, col: 0,
-            title: "Just an ordinary upgrade",
-            desc: "Increase all damage",
-            effect: x => 0.1 * (x ** 1.35) + 1,
-            effectDisplay: x => format(x * 100) + "%",
-            req: () => game.level >= 250,
-            reqDisplay: "Level 250",
-            cost: x => 1e10 * 10 ** x,
-        },
-        11: {
-            row: 2, col: 1,
-            title: "Artifact spender",
-            desc: "Increase bulk artifact spending limit<br/>Spend more artifact for better gilding",
-            effect: x => (x ** 2) * 2 + 1,
-            effectDisplay: x => format(x),
-            req: () => game.level >= 350,
-            reqDisplay: "Level 350",
-            cost: x => 1e9 * 10000 ** x,
-        },
-        12: {
-            row: 2, col: 2,
-            title: "Artifact duplication",
-            desc: "Add +X to artifact gain for each ore duplication that happens on the same ore",
-            effect: x => x,
-            effectDisplay: x => format(x),
-            req: () => game.level >= 500,
-            reqDisplay: "Level 500",
-            cost: x => 1e12 * 1000 ** x,
-        },
-        13: {
-            row: 3, col: 1,
-            title: "Exploding ore",
-            desc: "Decrease ore duplicating chance decay",
-            effect: x => 0.5 * 0.95 ** x,
-            effectDisplay: x => x < 0.1 ? "/" + format(1 / x) : format(x * 100) + "%",
-            visible: () => game.ascensionPoints > 0,
-            req: () => game.ascensionPoints >= 500,
-            reqDisplay: "500 AP",
-            cost: x => 2000 * 1.25 ** x,
-            costType: "artifacts",
-            keepOn: ["ascension"],
-        },
-        14: {
-            row: 0, col: -1,
-            title: "Critical taps",
-            desc: "Chance to deal 5x damage on tap",
-            effect: x => 0.02 * x,
-            effectDisplay: x => format(x * 100) + "%",
-            visible: () => game.ascensionPoints >= 300,
-            req: () => game.level >= 850,
-            reqDisplay: "Level 850",
-            cost: x => 1000000 * 100 ** x,
-        },
-        15: {
-            row: 0, col: -2,
-            title: "Companion strike",
-            desc: "Chance to deal 25x damage on companion attack",
-            effect: x => 0.01 * x,
-            effectDisplay: x => format(x * 100) + "%",
-            visible: () => game.ascensionPoints >= 400,
-            req: () => game.level >= 1000,
-            reqDisplay: "Level 1,000",
-            cost: x => 1000000000 * 10000 ** x,
-        },
-        16: {
-            row: 4, col: 0,
-            title: "<del>Tech</del> Mining startup",
-            desc: "Start with better companions upon ascension",
-            effect: x => x,
-            effectDisplay: x => getToolName("comp", x + 1),
-            visible: () => game.ascensionPoints >= 500,
-            req: () => game.ascensionPoints >= 750,
-            reqDisplay: "750 AP",
-            cost: x => getToolCost("comp", x + 1) * (10 + x * x) + 990,
-            costType: "artifacts",
-            keepOn: ["ascension"],
-        },
-        17: {
-            row: 4, col: 1,
-            title: "Spare warehouse",
-            desc: "Start with better tools upon ascension",
-            effect: x => x,
-            effectDisplay: x => getToolName("tool", x + 1),
-            visible: () => game.ascensionPoints >= 600,
-            req: () => game.ascensionPoints >= 1000,
-            reqDisplay: "1,000 AP",
-            cost: x => getToolCost("tool", x + 1) ** 2 * (x + 1) ** 2 * 1e9,
-            keepOn: ["ascension"],
-        },
-        18: {
-            row: 4, col: -1,
-            title: "Venture capital funding",
-            desc: "Start with extra cash upon ascension",
-            effect: x => x * 1000 ** (x ** 0.5),
-            effectDisplay: x => "$" + format(x),
-            visible: () => game.ascensionPoints >= 900,
-            req: () => game.ascensionPoints >= 1800,
-            reqDisplay: "1,800 AP",
-            cost: x => 1e12 * 1000 ** x,
-            keepOn: ["ascension"],
-        },
-        19: {
-            row: 0, col: 0,
-            title: "Raise the floor",
-            desc: "Every artifact used in a tool gives bonus gilding effect (independent from multi)",
-            effect: x => 0.5 * x,
-            effectDisplay: x => "+" + formatWhole(x, 1) + "%",
-            visible: () => game.ascensionPoints >= 1100,
-            req: () => game.level >= 1350,
-            reqDisplay: "Level 1,350",
-            cost: x => 666666666 * 66666 ** x,
-        },
-        20: {
-            row: 0, col: 2,
-            title: "Bullseye touch",
-            desc: "Increase critical tap stack limit<br/>(Chance decays for each crit)",
-            effect: x => 1 + x,
-            effectDisplay: x => "x" + format(x),
-            visible: () => game.ascensionPoints >= 1500,
-            req: () => game.level >= 2400,
-            reqDisplay: "Level 2,400",
-            cost: x => 999e9 * 99999 ** (x ** 1.5),
-        },
-        21: {
-            row: 0, col: 1,
-            title: "Companion swarm",
-            desc: "Increase companion strike stack limit<br/>(Chance decays for each crit)",
-            effect: x => 1 + x,
-            effectDisplay: x => "x" + format(x),
-            visible: () => game.ascensionPoints >= 2000,
-            req: () => game.level >= 4000,
-            reqDisplay: "Level 4,000",
-            cost: x => 999e12 * 99999999 ** (x ** 2.25),
-        },
-        22: {
-            row: 3, col: 2,
-            title: "Artifact superpower",
-            desc: "Artifact duplication count in above upgrade's effect is raised to a power",
-            effect: x => 1 + x * 0.2,
-            effectDisplay: x => "^" + formatWhole(x, 1),
-            visible: () => game.ascensionPoints >= 1000,
-            req: () => game.ascensionPoints >= 2400,
-            reqDisplay: "2,400 AP",
-            cost: x => 1e12 * 1000 ** (x ** 1.2),
-            keepOn: ["ascension"],
-        },
-        23: {
-            row: 3, col: -2,
-            title: "Artifact novelty",
-            desc: "Multiplies artifact gain from new ores",
-            effect: x => 0.15 * (x ** 1.4) + 1,
-            effectDisplay: x => format(x * 100) + "%",
-            visible: () => game.ascensionPoints >= 1200,
-            req: () => game.ascensionPoints >= 3200,
-            reqDisplay: "3,200 AP",
-            cost: x => 1e12 * 1000 ** (x ** 1.2),
-            keepOn: ["ascension"],
-        },
+
+
+var selectedUpgrade = ["normal", 1]
+var currentUpgradePage = 0;
+
+function openUpgradeScreen() {
+    if (game.level >= 5 || game.minerSoulTotal > 0) {
+        document.getElementById("upgradeScreen").style.left = "0"
+        document.getElementById("toolScreen").style.left = "100%"
+        document.getElementById("statsScreen").style.left = "-100%"
+
+        updateUpgrades();
+
+        displayUpgrade(selectedUpgrade[0], selectedUpgrade[1])
     }
+}
+
+let upgradeButtons = {};
+
+function initUpgrades() {
+    let index = 0;
+    for (let type in upgrades) {
+        const indexConst = index;
+        upgradeButtons[type] = {}
+        let holder = document.getElementById("upgradeHolder_" + type);
+        for (let id in upgrades[type]) {
+            let data = upgrades[type][id];
+            let upg = document.createElement("div");
+            upg.classList.add("upgrade");
+
+            if (id == "$next") {
+                upg.style.top = "55vh";
+                upg.style.left = "calc(50% + 20vh)";
+                upg.style.backgroundImage = "url('upgrades/next.png')";
+                upg.onclick = () => setUpgradePage(indexConst + 1);
+            } else {
+                upg.style.top = (data.row * 10 + 15) + "vh";
+                upg.style.left = "calc(50% + " + (data.col * 10) + "vh)";
+                upg.style.backgroundImage = "url('upgrades/" + type + "/" + id + ".png')";
+                upg.onclick = () => displayUpgrade(type, id);
+            }
+
+            upgradeButtons[type][id] = upg
+            holder.appendChild(upg);
+        }
+        if (index > 0) {
+            let upg = document.createElement("div");
+            upg.classList.add("upgrade");
+            upg.style.top = "55vh";
+            upg.style.left = "calc(50% - 20vh)";
+            upg.style.backgroundImage = "url('upgrades/previous.png')";
+            upg.onclick = () => setUpgradePage(indexConst - 1);
+            holder.appendChild(upg);
+        }
+        index++;
+    }
+}
+function updateUpgrades() {
+	if (!upgradeButtons.normal) initUpgrades();
+    let type = ["normal", "reincarnation"][currentUpgradePage];
+	for (let id in upgrades[type]) {
+		let data = upgrades[type][id];
+
+		let visible = data.visible?.() ?? true;
+		upgradeButtons[type][id].style.display = visible ? "" : "none";
+		if (!visible || id == "$next") continue;
+
+		let selected = selectedUpgrade[0] == type && selectedUpgrade[1] == id;
+		upgradeButtons[type][id].classList.toggle("selected", selected);
+		let unlocked = data.req();
+		upgradeButtons[type][id].style.opacity = 
+			(unlocked ? "" : "0.5");
+		upgradeButtons[type][id].style.filter = 
+			(selected ? "drop-shadow(0 0 1vh white)" : "");
+		if (!unlocked) continue;
+
+		let amount = game.upgradesBought[type]?.[id] ?? 0;
+		let cost = data.cost(amount);
+		let costType = data.costType || "cash";
+		let canBuy = game[costType] >= cost;
+		upgradeButtons[type][id].classList.toggle("can-buy", canBuy);
+	}
+}
+
+function setUpgradePage(page) {
+    currentUpgradePage = page;
+    document.getElementById("upgradeScreen").style.setProperty("--page", page);
+    updateUpgrades();
+}
+
+function closeUpgradeScreen() {
+	document.getElementById("upgradeScreen").style.left = "-100%"
+	loadOre(game.currentOre)
+}
+
+function getUpgradeEffect(type, x) {
+	let upgrade = upgrades[type]?.[x];
+	let amount = game.upgradesBought[type]?.[x] ?? 0;
+	return upgrade.effect(amount);
+}
+
+function getUpgradeCurrencyName(name) {
+    return {
+        minerSouls: "miner's souls"
+    }[name] || name;
+}
+
+function displayUpgrade(type, x) {
+	let upgrade = upgrades[type]?.[x];
+	let amount = game.upgradesBought[type]?.[x] ?? 0;
+	if (!upgrade) {
+		document.getElementById("upgradeInfo").innerHTML = "Tap an upgrade for info"
+		document.getElementById("upgradeButton").innerHTML = "Tap an upgrade for info"
+	} else if (upgrade.req()) {
+		selectedUpgrade = [type, x]
+		document.getElementById("upgradeInfo").innerHTML = "<b>" + upgrade.title + "</b><br>" + 
+			upgrade.effectDisplay(upgrade.effect(amount)) + " -> " + upgrade.effectDisplay(upgrade.effect(amount + 1)) + "<br>" + 
+			upgrade.desc;
+		document.getElementById("upgradeButton").innerHTML = (
+			upgrade.costType
+			 	? "Buy for " + format(upgrade.cost(amount)) + " " + getUpgradeCurrencyName(upgrade.costType)
+			 	: "Buy for $" + format(upgrade.cost(amount))
+		);
+	} else {
+		selectedUpgrade = 0
+		document.getElementById("upgradeInfo").innerHTML = "<b>Locked upgrade</b>"
+		document.getElementById("upgradeButton").innerHTML = "Unlocks at " + upgrade.reqDisplay + "!"
+	}
+	updateUpgrades();
+}
+
+function buyUpgrade() {
+	let [type, id] = selectedUpgrade;
+	let upgrade = upgrades[type]?.[id];
+	if (!upgrade || !upgrade.req()) return;
+	let amount = game.upgradesBought[type]?.[id] ?? 0;
+	let cost = upgrade.cost(amount);
+	let costType = upgrade.costType || "cash";
+	if (game[costType] >= cost) {
+		game[costType] -= cost;
+
+		updateCurrencies()
+
+		game.upgradesBought[type][id] = (game.upgradesBought[type][id] ?? 0) + 1;
+
+		displayUpgrade(type, id)
+
+		if (type == "normal" && id == 1)         calculateDamage()
+		if (type == "normal" && id == 2)         calculateDamage()
+		if (type == "normal" && id == 10)        calculateDamage()
+		else if (type == "normal" && id == 4)    game.artifactChance = getUpgradeEffect("normal", 4)
+
+		updateUpgrades();
+	}
 }
