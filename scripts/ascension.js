@@ -5,6 +5,7 @@ function openAscensionScreen() {
 		document.getElementById("ascensionScreen").style.left = "0"
 		document.getElementById("artifactScreen").style.left = "100%"
 		document.getElementById("ascensionPoints").innerHTML = format(game.ascensionPoints)
+		document.getElementById("reincarnationTabButton").style.display = game.gameFinished ? "" : "none"
 		updateAscensionGain();
 	}
 }
