@@ -343,7 +343,7 @@ function mineOre() {
 	let factor = 1;
 	let stack = 0;
 	let chance = getUpgradeEffect("normal", 14);
-	while (stack < getUpgradeEffect("normal", 20) && game.level >= 30 && Math.random() < chance) {
+	while (stack < getUpgradeEffect("normal", 20) && Math.random() < chance) {
 		factor *= 5
 		chance *= 0.75;
 		stack++;
@@ -939,7 +939,7 @@ function timePlayedUp() {
 		while (tapTimer > 1 && count < 10000) {
 			let factor = 1;
 			let stack = 0;
-			while (stack < getUpgradeEffect("normal", 21) && game.level >= 30 && Math.random() < chance) {
+			while (stack < getUpgradeEffect("normal", 21) && Math.random() < chance) {
 				factor *= 25
 				chance *= 0.5;
 				stack++;
