@@ -18,6 +18,7 @@ function reset() {
 		numberFormat: "standardLong",
 		messages: true,
 		unlockedOres: 1,
+		currentOre: 1,
 		currentTool: 1,
 		currentCompanion: 1,
 		upgradesBought: {},
@@ -39,7 +40,6 @@ function reset() {
 
 reset()
 
-var currentOre = 1
 var currentLayer = 1
 var previousLayer = 1
 var currentHitPoints = 1
@@ -180,7 +180,7 @@ function changeNumberFormat() {
 		game.numberFormat = "standard"
 		document.getElementById("numberFormat").innerHTML = "Standard"
 	}
-	loadOre(currentOre)
+	loadOre(game.currentOre)
 	document.getElementById("cash").innerHTML = "$" + format(game.cash)
 }
 
@@ -214,8 +214,11 @@ function loadOre(x) {
 	document.getElementById("currentHardness").innerHTML = format(stats.hardness)
 
 	{
+		let chance = 1;
 		let {damage, income} = calculateOreDamage(x, game.activeDamage, [
-			[getUpgradeEffect("normal", 14), 5]
+			...new Array(getUpgradeEffect("normal", 20))
+				.fill(0)
+				.map((_, i) => [chance *= getUpgradeEffect("normal", 14) * 0.75 ** i, 5 ** (i + 1)])
 		]);
 
 		document.getElementById("currentDamage").innerHTML = format(damage)
@@ -225,8 +228,11 @@ function loadOre(x) {
 		document.getElementById("currentNetGain").style.color = damage > 0 ? "" : "#f44";
 	}
 	{
+		let chance = 1;
 		let {damage, income} = calculateOreDamage(x, game.idleDamage, [
-			[getUpgradeEffect("normal", 15), 25]
+			...new Array(getUpgradeEffect("normal", 21))
+				.fill(0)
+				.map((_, i) => [chance *= getUpgradeEffect("normal", 15) * 0.75 ** i, 25 ** (i + 1)])
 		]);
 
 		if (game.level > 5) {
@@ -266,7 +272,7 @@ function loadOre(x) {
 	}
 }
 
-loadOre(1)
+loadOre(game.currentOre)
 
 function calculateOreDamage(ore, damage, critList = []) {
 	let stats = getOreStats(ore);
@@ -285,32 +291,32 @@ function calculateOreDamage(ore, damage, critList = []) {
 }
 
 function nextOre() {
-	currentOre++
-	loadOre(currentOre)
+	game.currentOre++
+	loadOre(game.currentOre)
 }
 
 function previousOre() {
-	currentOre = Math.max(currentOre-1, 1)
-	loadOre(currentOre)
+	game.currentOre = Math.max(game.currentOre-1, 1)
+	loadOre(game.currentOre)
 }
 
 function firstOre() {
 	currentLayer = 1
-	while ((currentOre-1)>=layerPoints[currentLayer]) currentLayer++
-	currentOre = layerPoints[currentLayer-1]
-	loadOre(currentOre)
+	while ((game.currentOre-1)>=layerPoints[currentLayer]) currentLayer++
+	game.currentOre = layerPoints[currentLayer-1]
+	loadOre(game.currentOre)
 }
 
 function lastOre() {
 	currentLayer = 1
-	while (currentOre>=layerPoints[currentLayer]) currentLayer++
+	while (game.currentOre>=layerPoints[currentLayer]) currentLayer++
 	if (layerPoints[currentLayer] > game.unlockedOres) {
-		currentOre = game.unlockedOres
-		loadOre(currentOre)
+		game.currentOre = game.unlockedOres
+		loadOre(game.currentOre)
 	}
 	else {
-		currentOre = layerPoints[currentLayer]
-		loadOre(currentOre)
+		game.currentOre = layerPoints[currentLayer]
+		loadOre(game.currentOre)
 	}
 }
 
@@ -333,14 +339,23 @@ function calculateDamage() {
 }
 
 function mineOre() {
-	let critChance = getUpgradeEffect("normal", 14);
 	let damage = game.activeDamage;
-	if (Math.random() < critChance) damage *= 5;
-	dealDamage(damage);
+	let factor = 1;
+	let stack = 0;
+	let chance = getUpgradeEffect("normal", 14);
+	while (stack < getUpgradeEffect("normal", 20) && game.level >= 30 && Math.random() < chance) {
+		factor *= 5
+		chance *= 0.75;
+		stack++;
+	}
+	if (stack) {
+		flash("currentHitPoints", "#f88");
+	}
+	dealDamage(damage * factor);
 }
 
 function dealDamage(damage) {
-	let stats = getOreStats(currentOre);
+	let stats = getOreStats(game.currentOre);
 
 	currentHitPoints -= Math.max(damage - stats.hardness, 0);
 
@@ -361,16 +376,16 @@ function dealDamage(damage) {
 		flash("cash", ["#7f7", "#8ff", "#ccf", "#ff7", "#f88"][Math.min(stack, 5)])
 
 		game.totalOresMined++
-		game.XP += 1.2 ** (currentOre-1) / 1.3
+		game.XP += 1.2 ** (game.currentOre-1) / 1.3
 		game.level = XPToLevel(Math.max(Math.floor(game.XP), 0))
 		document.getElementById("level").innerHTML = format(game.level)
 		let XPToNextLevel = levelToXP(game.level + 1) - levelToXP(game.level)
 		let ProgressToNextLevel = (game.XP - levelToXP(game.level)).toFixed(1)
 		document.getElementById("XPBar").style.width = (ProgressToNextLevel / XPToNextLevel * 100) + "%"
-		if (currentOre == game.unlockedOres) {
+		if (game.currentOre == game.unlockedOres) {
 			game.unlockedOres++
 			if (game.level >= 10) {
-				game.artifacts += 1 + stack * getUpgradeEffect("normal", 12)
+				game.artifacts += 1 + stack * getUpgradeEffect("normal", 12) ** getUpgradeEffect("normal", 22) * getUpgradeEffect("normal", 23);
 				setMessage(1,"Found an artifact!")
 			}
 			flash("artifacts", "#ff8");
@@ -378,11 +393,11 @@ function dealDamage(damage) {
 			document.getElementById("arrowSkipRight").style.display = "block"
 		}
 		else if (game.level >= 10 && Math.random() < game.artifactChance) {
-			game.artifacts += 1 + stack * getUpgradeEffect("normal", 12)
+			game.artifacts += 1 + stack * getUpgradeEffect("normal", 12) ** getUpgradeEffect("normal", 22);
 			setMessage(1,"Found an artifact!")
 			flash("artifacts", "#ff8");
 		}
-		if (currentOre == 78 && !game.gameFinished) {
+		if (game.currentOre == 78 && !game.gameFinished) {
 			document.getElementById("gameFinishScreen").style.display = "block"
 			game.gameFinished = true
 		}
@@ -412,7 +427,7 @@ function flash(target, color = "#8f8") {
 	document.getElementById(target).style.transition = "none"
 	document.getElementById(target).style.color = color
 	setTimeout(function() {
-		document.getElementById("cash").style.transition = "color 500ms"
+		document.getElementById(target).style.transition = "color 500ms"
 		document.getElementById(target).style.color = ""
 	}, 200)
 }
@@ -577,7 +592,7 @@ function loadToolScreenInfo(tool) {
 
 function closeToolScreen() {
 	document.getElementById("toolScreen").style.left = "100%"
-	loadOre(currentOre)
+	loadOre(game.currentOre)
 }
 
 function upgradeTool () {
@@ -683,7 +698,7 @@ function ascend() {
 	ascensionPointsToGet = ascensionPointsToGet * getUpgradeEffect("normal", 7)
 	ascensionPointsToGet = Math.max(ascensionPointsToGet - game.ascensionPoints, 0)
 	game.ascensionPoints += ascensionPointsToGet
-	currentOre = 1
+	game.currentOre = 1
 	game.cash = 0
 	game.ascensionCash = 0
 	game.unlockedOres = 1
@@ -705,7 +720,7 @@ function ascend() {
 	document.getElementById("ascensionScreen").style.left = "100%"
 	document.getElementById("toolScreen").style.left = "100%"
 	updateCurrencies()
-	loadOre(currentOre)
+	loadOre(game.currentOre)
 }
 
 function openUpgradeScreen() {
@@ -767,7 +782,7 @@ function updateUpgrades() {
 
 function closeUpgradeScreen() {
 	document.getElementById("upgradeScreen").style.left = "-100%"
-	loadOre(currentOre)
+	loadOre(game.currentOre)
 }
 
 function getUpgradeEffect(type, x) {
@@ -917,12 +932,25 @@ function timePlayedUp() {
 
 	if (game.level >= 5) {
 		tapTimer += timePlayedDiff * game.tapSpeed;
-		let critChance = getUpgradeEffect("normal", 15)
-		while (tapTimer > 1) {
-			let damage = game.idleDamage;
-			if (Math.random() < critChance) damage *= 25;
-			dealDamage(damage);
+		let damage = game.idleDamage;
+		let chance = getUpgradeEffect("normal", 14);
+		let count = 0;
+		let totalStack = 0;
+		while (tapTimer > 1 && count < 10000) {
+			let factor = 1;
+			let stack = 0;
+			while (stack < getUpgradeEffect("normal", 20) && game.level >= 30 && Math.random() < chance) {
+				factor *= 25
+				chance *= 0.5;
+				stack++;
+				totalStack++;
+			}
+			dealDamage(damage * factor);
 			tapTimer--;
+			count++;
+		}
+		if (totalStack) {
+			flash("currentHitPoints", "#f88");
 		}
 	}
 }
