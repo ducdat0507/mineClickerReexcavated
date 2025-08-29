@@ -933,7 +933,7 @@ function timePlayedUp() {
 	if (game.level >= 5) {
 		tapTimer += timePlayedDiff * game.tapSpeed;
 		let damage = game.idleDamage;
-		let chance = getUpgradeEffect("normal", 14);
+		let chance = getUpgradeEffect("normal", 15);
 		let count = 0;
 		let totalStack = 0;
 		while (tapTimer > 1 && count < 10000) {
