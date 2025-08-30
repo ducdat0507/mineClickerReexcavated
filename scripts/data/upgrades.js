@@ -130,7 +130,7 @@ const upgrades = {
             row: 3, col: 1,
             title: "Exploding ore",
             desc: "Decrease ore duplicating chance decay",
-            effect: x => 0.5 * 0.95 ** x,
+            effect: x => 0.5 * 0.95 ** Math.min(x, 1.5 * x ** 0.9),
             effectDisplay: x => x < 0.1 ? "/" + format(1 / x) : format(x * 100) + "%",
             visible: () => game.ascensionPoints > 0,
             req: () => game.ascensionPoints >= 500,
@@ -218,7 +218,7 @@ const upgrades = {
             visible: () => game.ascensionPoints >= 1500,
             req: () => game.level >= 2400,
             reqDisplay: "Level 2,400",
-            cost: x => 999e4 * 99999 ** ((x + 1) ** 1.5),
+            cost: x => 999e9 * (99999 ** x) * 9 ** ((x + 1) ** 2),
         },
         21: {
             row: 0, col: 1,
@@ -229,7 +229,7 @@ const upgrades = {
             visible: () => game.ascensionPoints >= 2000,
             req: () => game.level >= 4000,
             reqDisplay: "Level 4,000",
-            cost: x => 999e2 * 9999999999 ** ((x + 1) ** 2.25),
+            cost: x => 999e12 * (9999999999 ** x) * 9 ** ((x + 1) ** 4),
         },
         22: {
             row: 3, col: 2,

@@ -14,7 +14,7 @@ function getOreStats(x) {
 		name: (rec ? "<small>Transcended</small> " : "") + oreNames[index],
 		value: oreValues[index] ** (rec + 1) * (oreValues[77] * 7) ** factor,
 		hitPoints: oreHitPoints[index] ** (rec + 1) * (oreHitPoints[77] / 7) ** factor,
-		hardness: (oreHardnesses[index]) ** (rec + 1) * oreHardnesses[77] ** factor,
+		hardness: (oreHardnesses[index]) * (oreHitPoints[77] / 7) ** (factor + rec),
 	}
 }
 
