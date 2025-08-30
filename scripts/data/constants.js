@@ -10,8 +10,8 @@ const toolNames = ["Shovel", "Pickaxe", "Rusty drill", "Stone drill", "Copper dr
 const toolDamages = [1, 3, 8, 20, 40, 75, 130, 250, 450, 700, 1300, 2500, 4500, 8000, 15000, 27500, 52000, 95000, 180000, 350000, 660000, 1.25e6, 2.4e6, 4.5e6, 8.5e6, 1.6e7, 3e7, 5.6e7, 1.05e8, 2e8, 3.5e8, 6.5e8, 1.2e9]
 const toolCosts = [10, 60, 300, 2000, 10000, 80000, 400000, 5e6, 2.5e7, 1.5e8, 7.5e8, 3e9, 2e10, 2.5e11, 3.75e12, 7.5e13, 2.5e15, 7.5e16, 3e18, 1e20, 2e22, 3.1e24, 5e26, 1e29, 3e31, 5e33, 1e36, 5e38, 1e41, 1e44, 1e47, 1e50]
 
-const compNames = ["Miner rock", "Miner dog", "Miner gnome", "Miner human", "Buffed miner", "Miner & a co.", "Trio of miners", "Team of miners", "Mining machine", "Miner dragon", "Mining factory", "Mining corporation", "Mining town", "Mining county", "Mining country", "Mining planet"]
-const compDamages = [1, 3, 6, 10, 16, 25, 40, 60, 80, 110, 140, 170, 200, 250, 300, 360, 420]
+const compNames = ["Miner rock", "Miner dog", "Miner gnome", "Miner human", "Buffed miner", "Miner & a co.", "Trio of miners", "Team of miners", "Mining machine", "Miner dragon", "Mining factory", "Mining corporation", "Mining town", "Mining county", "Mining empire", "Mining planet", "Mining dyson swarm"]
+const compDamages = [1, 3, 6, 10, 16, 25, 40, 60, 80, 110, 140, 170, 200, 250, 300, 360, 420, Infinity]
 const compCosts = [1, 25, 100, 400, 1600, 3200, 6400, 15000, 45000, 150000, 600000, 3000000, 1e7, 6.6e7, 7.7e8, 1e10, Infinity]
 
 const illions = ["thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion", "undecillion", "duodecillion", "tredecillion", "quattuordecillion", "quindecillion", "sexdecillion", "septendecillion", "octodecillion", "novemdecillion", "vigintillion"]

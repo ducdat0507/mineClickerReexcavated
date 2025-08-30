@@ -14,7 +14,7 @@ function getOreStats(x) {
 		name: (rec ? "<small>Transcended</small> " : "") + oreNames[index],
 		value: oreValues[index] ** (rec + 1) * (oreValues[77] * 7) ** factor,
 		hitPoints: oreHitPoints[index] ** (rec + 1) * (oreHitPoints[77] / 7) ** factor,
-		hardness: (oreHardnesses[index]) * (oreHitPoints[77] / 7) ** (factor + rec),
+		hardness: oreHardnesses[index] * (oreHitPoints[index] ** rec) * ((oreHitPoints[77] / 7) ** (factor)),
 	}
 }
 
@@ -32,7 +32,9 @@ function loadOre(x) {
 
 	document.getElementById("oreIcon").style.backgroundImage = "url('oreIcons/" + stats.icon + ".png')"
 	document.getElementById("oreName").innerHTML = stats.name
-	if (stats.name > 13) {document.getElementById("oreName").style.fontSize = "5vh"}
+	let realName = document.getElementById("oreName").textContent;
+	if (realName.length > 18) {document.getElementById("oreName").style.fontSize = "5vh"}
+	else if (realName.length > 13) {document.getElementById("oreName").style.fontSize = "6vh"}
 	else {document.getElementById("oreName").style.fontSize = "7vh"}
 	currentHitPoints = stats.hitPoints
 	document.getElementById("currentOreValue").innerHTML = "$" + format(stats.value)
@@ -229,7 +231,7 @@ function dealDamage(damage) {
                 let artifactGain = getArtifactGain(stack) * getUpgradeEffect("normal", 23)
 				game.artifacts += artifactGain;
                 game.minerSoulArtifacts += artifactGain;
-				setMessage(1,"Found an artifact!")
+				setMessage(1,"Found an artifact!" + (stack > 1 ? " x" + format(stack) : ""))
 			}
 			flash("artifacts", "#ff8");
 			document.getElementById("arrowRight").style.display = "block"
@@ -239,7 +241,7 @@ function dealDamage(damage) {
             let artifactGain = getArtifactGain(stack);
             game.artifacts += artifactGain;
             game.minerSoulArtifacts += artifactGain;
-			setMessage(1,"Found an artifact!")
+			setMessage(1,"Found an artifact!" + (stack > 1 ? " x" + format(stack) : ""))
 			flash("artifacts", "#ff8");
 		}
 		if (game.currentOre == 78 && !game.gameFinished) {

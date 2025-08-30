@@ -130,7 +130,7 @@ const upgrades = {
             row: 3, col: 1,
             title: "Exploding ore",
             desc: "Decrease ore duplicating chance decay",
-            effect: x => 0.5 * 0.95 ** Math.min(x, 1.5 * x ** 0.9),
+            effect: x => 0.5 * 0.95 ** Math.min(x, 1.2 * x ** 0.9),
             effectDisplay: x => x < 0.1 ? "/" + format(1 / x) : format(x * 100) + "%",
             visible: () => game.ascensionPoints > 0,
             req: () => game.ascensionPoints >= 500,
