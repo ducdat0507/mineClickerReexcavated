@@ -2,6 +2,8 @@
 var currentLayer = 1
 var previousLayer = 1
 
+var timeSinceLevelUp = 0;
+
 function getOreStats(x) {
 	let rec = Math.floor((x - 1) / 78);
 	let index = (x - 1) % 78;
@@ -9,7 +11,7 @@ function getOreStats(x) {
 	return {
 		transLevel: rec,
 		icon: index + 1,
-		name: (rec ? "Transcended " : "") + oreNames[index],
+		name: (rec ? "<small>Transcended</small> " : "") + oreNames[index],
 		value: oreValues[index] ** (rec + 1) * (oreValues[77] * 7) ** factor,
 		hitPoints: oreHitPoints[index] ** (rec + 1) * (oreHitPoints[77] / 7) ** factor,
 		hardness: (oreHardnesses[index]) ** (rec + 1) * oreHardnesses[77] ** factor,
@@ -203,11 +205,24 @@ function dealDamage(damage) {
 
 		game.totalOresMined++
 		game.XP += 1.2 ** (game.currentOre-1) / 1.3
-		game.level = XPToLevel(Math.max(Math.floor(game.XP), 0))
+		let newLevel = XPToLevel(Math.max(Math.floor(game.XP), 0));
+		let isNewLevel = game.level != newLevel;
+		game.level = newLevel;
 		document.getElementById("level").innerHTML = format(game.level)
 		let XPToNextLevel = levelToXP(game.level + 1) - levelToXP(game.level)
 		let ProgressToNextLevel = (game.XP - levelToXP(game.level)).toFixed(1)
-		document.getElementById("XPBar").style.width = (ProgressToNextLevel / XPToNextLevel * 100) + "%"
+		document.getElementById("XPBar").style.width = (ProgressToNextLevel / XPToNextLevel * 100) + "%";
+		if (isNewLevel) {
+			document.getElementById("XPBar").animate([
+				{ filter: "grayscale(1) brightness(1.5)", width: "100%", left: "0", easing: "cubic-bezier(.2, .8, .2, .8)" },
+				{ filter: "grayscale(1) brightness(1.5)", width: "100%", left: "100%", offset: 0.2 },
+				{ filter: "none", width: "0", left: "0%", offset: 0.2, easing: "cubic-bezier(.2, .8, .2, .8)" },
+				{ left: "0%" },
+			], {
+				duration: 1000,
+			});
+		}
+
 		if (game.currentOre == game.unlockedOres) {
 			game.unlockedOres++
 			if (game.level >= 10) {

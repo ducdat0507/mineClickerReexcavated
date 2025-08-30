@@ -84,7 +84,7 @@ button:hover {
 	height: 100%;
 	width: 0;
 	background-image: linear-gradient(to top, #088, #0dd);
-	transition: width 400ms ease-out;
+	transition: width 200ms cubic-bezier(.2, .8, .2, .8);
 }
 
 #sectionMessages {
@@ -177,6 +177,10 @@ button:hover {
 	margin: 0;
 	color: #ffb;
 	white-space: nowrap;
+}
+
+#oreName small {
+	font-size: 0.6em;
 }
 
 #oreHealth {

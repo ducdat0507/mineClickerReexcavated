@@ -11,11 +11,11 @@ function openAscensionScreen() {
 }
 
 function updateAscensionGain() {
-	let ascensionPointsToGet = Math.floor(game.ascensionCash ** 0.12 * 5)
-	ascensionPointsToGet = ascensionPointsToGet * getUpgradeEffect("normal", 7)
+	let ascensionPointMulti = getUpgradeEffect("normal", 7);
+	let ascensionPointsToGet = Math.floor(game.ascensionCash ** 0.12 * 5 * ascensionPointMulti)
 	ascensionPointsToGet = Math.max(ascensionPointsToGet - game.ascensionPoints, 0)
 	document.getElementById("ascensionPointsToGet").innerHTML = format(ascensionPointsToGet)
-	let nextAscensionPoint = (game.ascensionPoints + ascensionPointsToGet + 1) / getUpgradeEffect("normal", 7)
+	let nextAscensionPoint = (game.ascensionPoints + ascensionPointsToGet + 1) / ascensionPointMulti
 	nextAscensionPoint = Math.floor((nextAscensionPoint / 5) ** (1/0.12))
 	document.getElementById("nextAscensionPoint").innerHTML = "$" + format(nextAscensionPoint)
 }

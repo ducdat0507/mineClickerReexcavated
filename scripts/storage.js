@@ -29,7 +29,7 @@ function initSave() {
 		gameFinished: false,
         minerSouls: 0,
         minerSoulTotal: 0,
-        minerSoulPending: 1000,
+        minerSoulPending: 1500,
         minerSoulRate: 0,
 		minerSoulCash: 0,
 		minerSoulArtifacts: 0,

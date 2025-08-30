@@ -9,6 +9,7 @@ function loadGame(loadgame) {
 	let ProgressToNextLevel = (game.XP - levelToXP(game.level)).toFixed(1)
 	document.getElementById("XPBar").style.width = (ProgressToNextLevel / XPToNextLevel * 100) + "%"
 	updateCurrencies()
+
 	if (game.numberFormat == "standard") {
 		document.getElementById("numberFormat").innerHTML = "Standard long"
 	}
@@ -67,7 +68,10 @@ function tick() {
 	}
 
     if (game.gameFinished) {
-        if (time - minerSoulLastUpdated > 1000) updateReincarnationGain();
+        if (time - minerSoulLastUpdated > 1000) {
+			updateReincarnationGain();
+			if (selectedUpgrade[1] == "$all") displayUpgrade(selectedUpgrade[0], selectedUpgrade[1]);
+		}
         game.minerSoulPending += game.minerSoulRate * delta / 3600;
     }
 

@@ -33,6 +33,11 @@ function initUpgrades() {
                 upg.style.left = "calc(50% + 20vh)";
                 upg.style.backgroundImage = "url('upgrades/next.png')";
                 upg.onclick = () => setUpgradePage(indexConst + 1);
+            } else if (id == "$all") {
+                upg.style.top = (data.row * 10 + 15) + "vh";
+                upg.style.left = "calc(50% + " + (data.col * 10) + "vh)";
+                upg.style.backgroundImage = "url('upgrades/all.png')";
+                upg.onclick = () => displayUpgrade(type, id);
             } else {
                 upg.style.top = (data.row * 10 + 15) + "vh";
                 upg.style.left = "calc(50% + " + (data.col * 10) + "vh)";
@@ -63,7 +68,7 @@ function updateUpgrades() {
 
 		let visible = data.visible?.() ?? true;
 		upgradeButtons[type][id].style.display = visible ? "" : "none";
-		if (!visible || id == "$next") continue;
+		if (!visible || id.startsWith("$")) continue;
 
 		let selected = selectedUpgrade[0] == type && selectedUpgrade[1] == id;
 		upgradeButtons[type][id].classList.toggle("selected", selected);
@@ -111,6 +116,20 @@ function displayUpgrade(type, x) {
 	if (!upgrade) {
 		document.getElementById("upgradeInfo").innerHTML = "Tap an upgrade for info"
 		document.getElementById("upgradeButton").innerHTML = "Tap an upgrade for info"
+	} else if (x == "$all") {
+		selectedUpgrade = [type, x]
+		let cheapestUpgrade = getCheapestUpgrade(type);
+		if (cheapestUpgrade) {
+			upgrade = cheapestUpgrade[1];
+			amount = game.upgradesBought[type]?.[cheapestUpgrade[0]] ?? 0;
+		}
+		document.getElementById("upgradeInfo").innerHTML = "<b>The EZBuy button&trade;</b><br>Purchase the cheapest upgrade:<br>"
+			+ upgrade.title ?? "None";
+		document.getElementById("upgradeButton").innerHTML = (
+			!upgrade ? "Can't buy"
+				: upgrade.costType ? "Buy for " + format(upgrade.cost(amount)) + " " + getUpgradeCurrencyName(upgrade.costType)
+			 	: "Buy for $" + format(upgrade.cost(amount))
+		);
 	} else if (upgrade.req()) {
 		selectedUpgrade = [type, x]
 		document.getElementById("upgradeInfo").innerHTML = "<b>" + upgrade.title + "</b><br>" + 
@@ -131,6 +150,12 @@ function displayUpgrade(type, x) {
 
 function buyUpgrade() {
 	let [type, id] = selectedUpgrade;
+	if (id == "$all") {
+		id = getCheapestUpgrade(type);
+		console.log(id);
+		if (!id) return;
+		id = id[0];
+	}
 	let upgrade = upgrades[type]?.[id];
 	if (!upgrade || !upgrade.req()) return;
 	let amount = game.upgradesBought[type]?.[id] ?? 0;
@@ -143,7 +168,7 @@ function buyUpgrade() {
 
 		game.upgradesBought[type][id] = (game.upgradesBought[type][id] ?? 0) + 1;
 
-		displayUpgrade(type, id)
+		displayUpgrade(...selectedUpgrade)
 
 		if (type == "normal" && id == 1)         calculateDamage()
 		if (type == "normal" && id == 2)         calculateDamage()
@@ -152,4 +177,11 @@ function buyUpgrade() {
 
 		updateUpgrades();
 	}
+}
+
+function getCheapestUpgrade(type) {
+	return Object.entries(upgrades[type])
+		.filter(x => !x[0].startsWith("$") && (x[1].visible?.() ?? true) && x[1].req())
+		.map(([key, item]) => [key, item, item.cost(game.upgradesBought[type]?.[key] ?? 0) / game[item.costType ?? "cash"]])
+		.sort((a, b) => a[2] - b[2])[0];
 }

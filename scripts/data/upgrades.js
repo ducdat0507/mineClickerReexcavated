@@ -218,7 +218,7 @@ const upgrades = {
             visible: () => game.ascensionPoints >= 1500,
             req: () => game.level >= 2400,
             reqDisplay: "Level 2,400",
-            cost: x => 999e9 * 99999 ** (x ** 1.5),
+            cost: x => 999e4 * 99999 ** ((x + 1) ** 1.5),
         },
         21: {
             row: 0, col: 1,
@@ -229,7 +229,7 @@ const upgrades = {
             visible: () => game.ascensionPoints >= 2000,
             req: () => game.level >= 4000,
             reqDisplay: "Level 4,000",
-            cost: x => 999e12 * 9999999999 ** (x ** 2.25),
+            cost: x => 999e2 * 9999999999 ** ((x + 1) ** 2.25),
         },
         22: {
             row: 3, col: 2,
@@ -255,6 +255,10 @@ const upgrades = {
             cost: x => 1e9 * 100 ** (x ** 1.2),
             keepOn: ["ascension"],
         },
+        $all: {
+            row: 4, col: -2,
+            visible: () => game.minerSoulTotal >= 5000,
+        },
         $next: {
             visible: () => game.minerSoulTotal > 0,
         }
@@ -264,11 +268,11 @@ const upgrades = {
             row: 2, col: -2,
             title: "Extra money",
             desc: "Multiplies cash gain",
-            effect: x => 4 ** x,
+            effect: x => 5 ** x,
             effectDisplay: x => "x" + format(x),
             req: () => true,
             reqDisplay: "",
-            cost: x => 100 * (x + 2) * 2 ** x,
+            cost: x => 75 * (x + 2) * 2 ** x,
             costType: "minerSouls",
         },
         2: {
@@ -279,18 +283,18 @@ const upgrades = {
             effectDisplay: x => "x" + format(x),
             req: () => true,
             reqDisplay: "",
-            cost: x => 150 * (x + 2) * 2 ** x,
+            cost: x => 125 * (x + 2) * 2 ** x,
             costType: "minerSouls",
         },
         3: {
             row: 2, col: 0,
             title: "Extra souls",
             desc: "Multiplies miner's soul gain",
-            effect: x => 0.5 * (x ** 1.3) + 1,
-            effectDisplay: x => format(x * 100) + "%",
+            effect: x => (x ** 1.3) + 1,
+            effectDisplay: x => "x" + format(x),
             req: () => game.upgradesBought.reincarnation?.[1] >= 1,
             reqDisplay: "1 of Extra money",
-            cost: x => 1500 * 5 ** x,
+            cost: x => 400 * 5 ** x,
             costType: "minerSouls",
         },
         4: {
@@ -301,7 +305,7 @@ const upgrades = {
             effectDisplay: x => "^" + formatWhole(x, 1),
             req: () => true,
             reqDisplay: "",
-            cost: x => 300 * 10 ** (x ** 1.2),
+            cost: x => 250 * 3 ** (x ** 1.2),
             costType: "minerSouls",
         },
         5: {
@@ -312,7 +316,7 @@ const upgrades = {
             effectDisplay: x => "^" + formatWhole(x, 1),
             req: () => true,
             reqDisplay: "",
-            cost: x => 300 * 10 ** (x ** 1.2),
+            cost: x => 250 * 3 ** (x ** 1.2),
             costType: "minerSouls",
         },
     }

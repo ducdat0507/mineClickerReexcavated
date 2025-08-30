@@ -50,8 +50,12 @@ function updateCurrencies() {
 	document.getElementById("upgradeScreenMinerSouls").innerHTML = format(game.minerSouls)
 	document.getElementById("upgradeScreenMinerSoulTotal").innerHTML = format(game.minerSoulTotal)
 
-	if (document.getElementById("upgradeScreen").style.left == "0px") updateUpgrades();
-	if (document.getElementById("ascensionScreen").style.left == "0px") updateAscensionGain();
+	if (document.getElementById("upgradeScreen").style.left == "0px") {
+		updateUpgrades();
+	}
+	if (document.getElementById("ascensionScreen").style.left == "0px") {
+		updateAscensionGain();
+	}
 }
 
 function flash(target, color = "#8f8") {
