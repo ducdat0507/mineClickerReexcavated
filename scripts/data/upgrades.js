@@ -240,7 +240,7 @@ const upgrades = {
             visible: () => game.ascensionPoints >= 1000,
             req: () => game.ascensionPoints >= 2500,
             reqDisplay: "2,500 AP",
-            cost: x => 1e12 * 1000 ** (x ** 1.3),
+            cost: x => 1e12 * 1000 ** (x ** 1.1 * 1.1 ** x),
             keepOn: ["ascension"],
         },
         23: {
