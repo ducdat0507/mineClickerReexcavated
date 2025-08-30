@@ -421,6 +421,7 @@ button:hover {
 	width: calc(100% - 2em);
 	position: relative;
 	background: #033;
+    box-sizing: border-box;
 }
 #minerSoulBreakdown caption {
 	position: absolute;
