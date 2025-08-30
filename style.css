@@ -58,9 +58,9 @@ button:hover {
 
 #main {
 	font-size: 3vh;
-	position: absolute;
-	top: 50vh;
-	left: 50vw;
+	position: fixed;
+	top: 50dvh;
+	left: 50dvw;
 	transform: translate(-50%, -50%);
 	background-color: #444;
 	background-image: url('texture1.png');
