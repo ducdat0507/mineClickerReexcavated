@@ -97,6 +97,9 @@ function deepCopy(from, to) {
 		if (from[key] === undefined) {
 			continue;
 		}
+		else if ((typeof from[key]) == "number" && to[key] === null) {
+			to[key] = from[key];
+		}
 		else if ((typeof(to[key])) == "object") {
 			to[key] = deepCopy(from[key], to[key])
 		}
