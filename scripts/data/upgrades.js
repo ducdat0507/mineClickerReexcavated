@@ -131,8 +131,8 @@ const upgrades = {
             title: "Exploding ore",
             desc: "Decrease ore duplicating chance decay",
             effect: x => {
-                const lerp = (a, b, x) => a + (b, a) * x;
-                return 0.5 * lerp(0.95 ** x, 8 / x, Math.max(Math.min(x / 20 - 0.5, 1), 0))
+                const lerp = (a, b, x) => a + (b - a) * x;
+                return 0.5 * lerp(0.95 ** x, 8 / x, clamp(x / 20 - 0.5, 0, 1))
             },
             effectDisplay: x => x < 0.1 ? "/" + formatWhole(1 / x, 1) : formatWhole(x * 100, 1) + "%",
             visible: () => game.ascensionPoints > 0,
