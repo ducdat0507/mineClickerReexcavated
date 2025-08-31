@@ -95,7 +95,7 @@ function setUpgradePage(page) {
 
 function closeUpgradeScreen() {
 	document.getElementById("upgradeScreen").style.left = "-100%"
-	loadOre(game.currentOre)
+	updateOreUI();
 }
 
 function getUpgradeEffect(type, x) {

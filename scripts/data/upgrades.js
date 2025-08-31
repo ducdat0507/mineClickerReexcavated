@@ -38,7 +38,7 @@ const upgrades = {
             effectDisplay: x => format(x * 100) + "%",
             req: () => game.level >= 15,
             reqDisplay: "Level 15",
-            cost: x => 100000 * 5 ** x,
+            cost: x => x >= 95 ? Infinity : 100000 * 5 ** x,
         },
         5: {
             row: 2, col: -1,
@@ -130,8 +130,11 @@ const upgrades = {
             row: 3, col: 1,
             title: "Exploding ore",
             desc: "Decrease ore duplicating chance decay",
-            effect: x => 0.5 * 0.95 ** Math.min(x, 1.2 * x ** 0.9),
-            effectDisplay: x => x < 0.1 ? "/" + format(1 / x) : format(x * 100) + "%",
+            effect: x => {
+                const lerp = (a, b, x) => a + (b, a) * x;
+                return 0.5 * lerp(0.95 ** x, 8 / x, Math.max(Math.min(x / 20 - 0.5, 1), 0))
+            },
+            effectDisplay: x => x < 0.1 ? "/" + formatWhole(1 / x, 1) : formatWhole(x * 100, 1) + "%",
             visible: () => game.ascensionPoints > 0,
             req: () => game.ascensionPoints >= 500,
             reqDisplay: "500 AP",

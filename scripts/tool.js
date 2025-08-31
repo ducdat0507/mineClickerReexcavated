@@ -35,13 +35,13 @@ function getToolCost(type, x) {
 		if (x < 33) {
 			return toolCosts[x - 1] * getUpgradeEffect("normal", 8)
 		} else {
-			return (x * 1000) ** (x - 33) ** 1.1 * toolCosts[32] * getUpgradeEffect("normal", 8)
+			return (x * 1000) ** (x - 33) * toolCosts[32] * getUpgradeEffect("normal", 8)
 		}
 	} else if (type == "comp") {
 		if (x <= compCosts.length) {
 			return compCosts[x - 1]
 		} else {
-			return 10 * compCosts[compCosts.length - 1]
+			return x ** (x - compCosts.length) * compCosts[compCosts.length - 1]
 		}
 	}
 }
@@ -58,7 +58,7 @@ function getToolName(type, x) {
 	if (type == "tool") {
 		return x < 25 ? toolNames[x - 1] : "Devourer Mk. " + romanize(x - 24);
 	} else if (type == "comp") {
-		return x <= compNames.length ? compNames[x - 1] : compNames[compNames.length - 1];
+		return x <= compNames.length ? compNames[x - 1] : "Grey goo Mk. " + romanize(x - compNames.length);
 	}
 }
 
@@ -107,7 +107,7 @@ function loadToolScreenInfo(tool) {
 
 function closeToolScreen() {
 	document.getElementById("toolScreen").style.left = "100%"
-	loadOre(game.currentOre)
+	updateOreUI();
 }
 
 function upgradeTool () {

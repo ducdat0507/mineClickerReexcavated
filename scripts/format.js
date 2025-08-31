@@ -1,7 +1,7 @@
 
 
 function format(x,forceLargeFormat=false) {
-	if (x != x) {return x.toLocaleString("en-US")}
+	if (!Number.isFinite(x)) {return x.toLocaleString("en-US")}
 	if (!forceLargeFormat && x < 1e6) return Math.floor(x).toLocaleString("en-US");
 	
 	let exponent = Math.floor(Math.log10(x))

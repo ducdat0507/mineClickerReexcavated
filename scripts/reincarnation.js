@@ -19,7 +19,7 @@ function updateReincarnationGain() {
 	minerSoulBreakdown.base = getUpgradeEffect("reincarnation", 3);
 	game.minerSoulRate = minerSoulBreakdown.base;
 
-	minerSoulBreakdown.transcend = Math.floor(game.unlockedOres / 78) ** 2 + 1;
+	minerSoulBreakdown.transcend = Math.floor((game.minerSoulBestOre - 1) / oreNames.length) ** 2 + 1;
 	game.minerSoulRate *= minerSoulBreakdown.transcend;
 
 	minerSoulBreakdown.cash = Math.log10(game.minerSoulCash + 1000) - 2;
@@ -35,7 +35,8 @@ function updateReincarnationGain() {
 function updateReincarnationUI() {
 	if (!document.getElementById("minerSoulBreakdownBody").childElementCount) initReincarnationUI();
 
-	for (let item in minerSoulBreakdown) minerSoulBreakdownItems[item].value.innerHTML = "x" + formatWhole(minerSoulBreakdown[item], 1);
+	for (let item in minerSoulBreakdown) minerSoulBreakdownItems[item].value.innerHTML = 
+		item == "base" ? format(minerSoulBreakdown[item]) : "x" + formatWhole(minerSoulBreakdown[item], 1);
 	document.getElementById("minerSoulRate").innerHTML = "+" + format(game.minerSoulRate) + " / hour";
 	document.getElementById("minerSoulsToGet").innerHTML = format(game.minerSoulPending);
 }
@@ -92,6 +93,7 @@ function reincarnate() {
 	game.ascensionPoints = 0
 	game.ascensionCash = 0
     game.minerSoulPending = 0
+    game.minerSoulBestOre = 0
     game.minerSoulRate = 0
 	game.minerSoulCash = 0
 	game.minerSoulArtifacts = 0

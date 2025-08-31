@@ -63,10 +63,16 @@ button:hover {
 	left: 50dvw;
 	transform: translate(-50%, -50%);
 	background-color: #444;
-	background-image: url('texture1.png');
-	background-size: 100%;
 	overflow: hidden;
 }
+
+#background {
+	position: absolute;
+	inset: 0;
+	background-image: url('texture1.png');
+	background-size: 100%;
+}
+
 
 #sectionLevel {
 	position: absolute;
@@ -557,6 +563,13 @@ button:hover {
 	background-size: 16vh;
 	transition: left 400ms ease-out;
 	z-index: 2;
+}
+
+#settings{
+	display: flex;
+	flex-flow: column;
+	align-items: start;
+	gap: 0.3em;
 }
 
 #gameFinishScreen {

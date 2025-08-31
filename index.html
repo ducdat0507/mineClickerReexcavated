@@ -18,6 +18,7 @@
   </head>
   <body onkeydown="if (!event.repeat) mineOre();">
 		<div id="main">
+			<div id="background"></div>
 			<div id="sectionLevel">
 				<div id="XPBar"></div>
 				<p style="font-size: 3vh; position: relative; z-index: 1">Level <span id="level">1</span></p>
@@ -42,7 +43,7 @@
 					</td>
 					<td>
 						Hardness: <span id="currentHardness" style="color: #fb8">0</span><br>
-						<span id="currentDamage">0</span> dmg / tap
+						<span id="currentDamage">0</span> <span id="currentActiveStat">dmg / sec</span>
 					</td>
 				</tr>
 				<tr id="currentIdle">
@@ -50,7 +51,7 @@
 						<span id="currentIdleGain">$1</span> / sec
 					</td>
 					<td>
-						<span id="currentIdleDamage">1</span> dmg / sec
+						<span id="currentIdleDamage">1</span> <span id="currentIdleStat">dmg / sec</span>
 					</td>
 				</tr>
 			</table>
@@ -177,11 +178,14 @@
 			<div id="statsScreen">
 				<p style="font-size: 8vh">Stats &amp; Info</p>
 				<p style="text-align: left">Time played: <span id="timePlayed">0</span><br>Total ores mined: <span id="totalOresMined">0</span></p><br>
-				<button onclick="changeNumberFormat()">Large number formatting: <span id="numberFormat">Standard</span></button><br>
-				<button onclick="enableDisableMessages()">Top bar messages: <span id="topBarMessages">On</span></button><br>
-				<button onclick="exportGame()">Export game</button><br>
-				<button onclick="importGame()">Import game</button><br>
-				<button style="color: #822" onclick="hardReset()">Hard reset</button>
+				<div id="settings">
+					<button onclick="changeNumberFormat()">Large number formatting: <span id="numberFormat">Standard</span></button>
+					<button onclick="enableDisableMessages()">Top bar messages: <span id="topBarMessages">On</span></button>
+					<button id="homeStatButton" onclick="changeHomeStat()">Stat on main screen: <span id="homeStat">Damage</span></button>
+					<button onclick="exportGame()">Export game</button>
+					<button onclick="importGame()">Import game</button>
+					<button style="color: #822" onclick="hardReset()">Hard reset</button>
+				</div>
 				<div class="bottomButtons">
 					<p style="font-size: 3vh; color: #777">
 						Mine Clicker Re-excavated by Demonin<br>

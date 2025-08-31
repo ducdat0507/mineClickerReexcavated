@@ -8,18 +8,8 @@ function loadGame(loadgame) {
 	let XPToNextLevel = levelToXP(game.level + 1) - levelToXP(game.level)
 	let ProgressToNextLevel = (game.XP - levelToXP(game.level)).toFixed(1)
 	document.getElementById("XPBar").style.width = (ProgressToNextLevel / XPToNextLevel * 100) + "%"
-	updateCurrencies()
-
-	if (game.numberFormat == "standard") {
-		document.getElementById("numberFormat").innerHTML = "Standard long"
-	}
-	else if (game.numberFormat == "standardLong") {
-		document.getElementById("numberFormat").innerHTML = "Scientific"
-	}
-	else {
-		document.getElementById("numberFormat").innerHTML = "Standard"
-	}
-	document.getElementById("topBarMessages").innerHTML = game.messages ? "On" : "Off"
+	updateSettings();
+	updateCurrencies();
 }
 
 
@@ -45,25 +35,10 @@ function tick() {
 
 	if (game.level >= 5) {
 		tapTimer += delta * game.tapSpeed;
-		let damage = game.idleDamage;
-		let chance = getUpgradeEffect("normal", 15);
-		let count = 0;
-		let totalStack = 0;
-		while (tapTimer > 1 && count < 10000) {
-			let factor = 1;
-			let stack = 0;
-			while (stack < getUpgradeEffect("normal", 21) && Math.random() < chance) {
-				factor *= 25
-				chance *= 0.5;
-				stack++;
-				totalStack++;
-			}
-			dealDamage(damage * factor);
-			tapTimer--;
-			count++;
-		}
-		if (totalStack) {
-			flash("currentHitPoints", "#f88");
+
+		if (tapTimer > 0) {
+			doIdleDamage(Math.floor(tapTimer));
+			tapTimer %= 1;
 		}
 	}
 

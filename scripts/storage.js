@@ -14,6 +14,7 @@ function initSave() {
 		totalOresMined: 0,
 		timePlayed: 0,
 		numberFormat: "standardLong",
+		homeStat: "damage",
 		messages: true,
 		unlockedOres: 1,
 		currentOre: 1,
@@ -31,6 +32,7 @@ function initSave() {
         minerSoulTotal: 0,
         minerSoulPending: 1500,
         minerSoulRate: 0,
+        minerSoulBestOre: 0,
 		minerSoulCash: 0,
 		minerSoulArtifacts: 0,
 	}
