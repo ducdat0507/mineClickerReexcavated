@@ -135,7 +135,7 @@ const upgrades = {
             visible: () => game.ascensionPoints > 0,
             req: () => game.ascensionPoints >= 500,
             reqDisplay: "500 AP",
-            cost: x => 2000 * 1.25 ** x,
+            cost: x => 2000 * 1.25 ** Math.max(x, 0.05 * x ** 1.8),
             costType: "artifacts",
             keepOn: ["ascension"],
         },
@@ -240,7 +240,7 @@ const upgrades = {
             visible: () => game.ascensionPoints >= 1000,
             req: () => game.ascensionPoints >= 2500,
             reqDisplay: "2,500 AP",
-            cost: x => 1e12 * 1000 ** (x ** 1.1 * 1.1 ** x),
+            cost: x => x >= 15 ? Infinity : 1e12 * 1000 ** (x ** 1.1 * 1.1 ** x),
             keepOn: ["ascension"],
         },
         23: {

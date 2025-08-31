@@ -23,7 +23,7 @@ function getToolDamage(type, x) {
 		if (x <= compDamages.length) {
 			return compDamages[x - 1]
 		} else {
-			return compDamages[compDamages.length - 1] + 5 * (x - compDamages.length)
+			return compDamages[compDamages.length - 1] + 50 * (x - compDamages.length)
 		}
 	}
 }
@@ -35,7 +35,7 @@ function getToolCost(type, x) {
 		if (x < 33) {
 			return toolCosts[x - 1] * getUpgradeEffect("normal", 8)
 		} else {
-			return (x * 100) ** (x - 33) * toolCosts[32] * getUpgradeEffect("normal", 8)
+			return (x * 1000) ** (x - 33) ** 1.1 * toolCosts[32] * getUpgradeEffect("normal", 8)
 		}
 	} else if (type == "comp") {
 		if (x <= compCosts.length) {

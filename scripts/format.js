@@ -1,20 +1,23 @@
 
 
 function format(x,forceLargeFormat=false) {
-	if (x==Infinity) {return "Infinity"}
-	else if (game.numberFormat == "standard" && (forceLargeFormat || x>=1e6)) {
-		let exponent = Math.floor(Math.log10(x) / 3)
-		return formatSig(x/(1000**exponent), 5) + " " + illionsShort[exponent-1]
+	if (x != x) {return x.toLocaleString("en-US")}
+	if (!forceLargeFormat && x < 1e6) return Math.floor(x).toLocaleString("en-US");
+	
+	let exponent = Math.floor(Math.log10(x))
+
+	if (game.numberFormat == "standard") {
+		let illionIndex = Math.floor(exponent / 3);
+		if (illionsShort[illionIndex-1])
+			return formatSig(x/(1000**illionIndex), 5) + " " + illionsShort[illionIndex-1]
 	}
-	else if (game.numberFormat == "standardLong" && (forceLargeFormat || x>=1e6)) {
-		let exponent = Math.floor(Math.log10(x) / 3)
-		return formatSig(x/(1000**exponent), 3) + " " + illions[exponent-1]
+	if (game.numberFormat == "standardLong") {
+		let illionIndex = Math.floor(exponent / 3);
+		if (illions[illionIndex-1])
+			return formatSig(x/(1000**illionIndex), 3) + " " + illions[illionIndex-1]
 	}
-	else if (game.numberFormat == "scientific" && (forceLargeFormat || x>=1e6)) {
-		let exponent = Math.floor(Math.log10(x))
-		return formatSig(Math.floor(x/(10**exponent)*10000)/10000, 5) + "e" + exponent
-	}
-	else return Math.floor(x).toLocaleString("en-US")
+		
+	return formatSig(Math.floor(x/(10**exponent)*10000)/10000, 5) + "e" + exponent
 }
 
 function formatSig(x, digits = 2) {
