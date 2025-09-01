@@ -125,14 +125,14 @@ function upgradeTool (tool) {
 		game.artifactBoost = 0
 		game.artifactUsed = 0
 
-		loadToolScreenInfo()
+		if (tool == currentTool) loadToolScreenInfo()
 		calculateDamage()
 	} else if (tool == "comp" && game.artifacts >= toolCost) {
 		game.artifacts -= toolCost
 
 		game.currentCompanion++
 
-		loadToolScreenInfo()
+		if (tool == currentTool) loadToolScreenInfo()
 		calculateDamage()
 	}
 }
