@@ -282,7 +282,7 @@ const upgrades = {
             row: 2, col: -1,
             title: "Extra artifacts",
             desc: "Multiplies artifact gain",
-            effect: x => x + 1,
+            effect: x => (x ** 1.3) + 1,
             effectDisplay: x => "x" + format(x),
             req: () => true,
             reqDisplay: "",
