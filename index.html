@@ -59,11 +59,16 @@
 			<div class="arrow" id="arrowRight" onclick="nextOre()"></div>
 			<div class="arrow" id="arrowSkipLeft" onclick="firstOre()"></div>
 			<div class="arrow" id="arrowSkipRight" onclick="lastOre()"></div>
+			<div class="autoToggles">
+				<div class="autoButton" id="autoToggle_advance">
+					Auto advance: <span class="status">On</span>
+				</div>
+			</div>
 			<div class="bottomButtons">
-				<div class="bottomButton" onclick="openToolScreen()">TUL</div>
+				<div class="bottomButton" onclick="openToolScreen()">TOOL</div>
 				<div class="bottomButton" id="upgradeBottomButton" style="color: #777" onclick="openUpgradeScreen()">UPG</div>
 				<div class="bottomButton" id="ascensionBottomButton" style="color: #777" onclick="openAscensionScreen()">100</div>
-				<div class="bottomButton" onclick="openStatsScreen()">INF</div>
+				<div class="bottomButton" onclick="openStatsScreen()">INFO</div>
 			</div>
 			
 			<div id="toolScreen">
@@ -75,8 +80,9 @@
 				<div class="bottomButton" id="artifactBottomButton" style="color: #777;" onclick="openArtifactScreen()">Unlocks at level 10!</div>
 				<div class="bottomButtons">
 					<div class="bottomButton" onclick="closeToolScreen()">Back</div>
-					<div class="bottomButton" onclick="loadToolScreenInfo('tool')">TUL</div>
-					<div class="bottomButton" onclick="loadToolScreenInfo('comp')">CMP</div>
+					<div class="bottomButton" onclick="loadToolScreenInfo('tool')">TOOL</div>
+					<div class="bottomButton" id="compButton" onclick="loadToolScreenInfo('comp')">COMP</div>
+					<div class="bottomButton" id="autoScreenButton" onclick="showAutoScreen()">AUTO</div>
 				</div>
 			</div>
 			
@@ -128,7 +134,7 @@
 					</tfoot>
 				</table>
 				<p id="reincarnationText" style="margin:1em .5em">
-					Reincarnation will reset everything below in exchange for miner's souls. Use miner's souls for powerful upgrades on the Upgrades tab.
+					Reincarnation will reset everything below in exchange for miner's souls. Use miner's souls for powerful upgrades on the UPG tab.
 				</p>
 				<div id="reincarnateButton" onclick="confirmReincarnation()">Reincarnate and gain<br><b><span id="minerSoulsToGet">0</span> miner's souls</b></div>
 				<div class="bottomButtons">
@@ -151,6 +157,17 @@
 				<center>
 					<button onclick="document.getElementById('gameFinishScreen').style.display = 'none'">Okay</button>
 				</center><br>
+			</div>
+			
+			<div id="autoScreen">
+				<div id="autoButtons">
+					<h3>
+						Auto controls
+					</h3>
+				</div>
+				<div class="bottomButtons">
+					<div class="bottomButton" onclick="hideAutoScreen()">Back</div>
+				</div>
 			</div>
 			
 			<div id="upgradeScreen">
@@ -203,6 +220,7 @@
 
 		<script src="scripts/artifact.js"></script>
 		<script src="scripts/ascension.js"></script>
+		<script src="scripts/auto.js"></script>
 		<script src="scripts/format.js"></script>
 		<script src="scripts/main.js"></script>
 		<script src="scripts/ore.js"></script>

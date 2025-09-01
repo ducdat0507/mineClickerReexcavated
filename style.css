@@ -219,7 +219,6 @@ button:hover {
 	text-align: right;
 }
 
-
 .bottomButtons {
 	position: absolute;
 	bottom: 0;
@@ -567,7 +566,7 @@ button:hover {
 	z-index: 2;
 }
 
-#settings{
+#settings {
 	display: flex;
 	flex-flow: column;
 	align-items: start;
@@ -585,4 +584,49 @@ button:hover {
 	text-align: center;
 	z-index: 3;
 	display: none;
+}
+
+#autoScreen {
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background-color: #333;
+	background-image: url('back.png');
+	background-size: 16vh;
+	transition: left 400ms ease-out;
+	z-index: 2;
+}
+
+#autoButtons {
+	display: flex;
+	padding: 1em 10%;
+	gap: 0.5em;
+	flex-flow: column;
+	overflow-y: auto;
+	position: absolute;
+	inset: 0 0 10vh 0;
+}
+
+#autoButtons > h3 {
+	color: white;
+	text-align: center;
+}
+
+.thickButton {
+	border-image: url('button.png') 3 / 1.5vh;
+	background: #c0c0c0;
+	margin: 0;
+	width: 100%;
+	height: 3em;
+	line-height: 3em;
+	color: #444;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.thickButton:hover {
+	cursor: pointer;
 }

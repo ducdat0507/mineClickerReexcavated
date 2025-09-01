@@ -46,9 +46,44 @@ function tick() {
         if (time - minerSoulLastUpdated > 1000) {
 			updateReincarnationGain();
 			if (selectedUpgrade[1] == "$all") displayUpgrade(selectedUpgrade[0], selectedUpgrade[1]);
+			
+			let hasAuto;
+			if (game.auto.tool) {
+				hasAuto = true;
+				upgradeTool("tool");
+			}
+			if (game.auto.comp) {
+				hasAuto = true;
+				upgradeTool("comp");
+			}
+			if (game.auto.artifact && game.artifactBoost < getUpgradeEffect("normal", 5) * getUpgradeEffect("normal", 6)) {
+				hasAuto = true;
+				useArtifact();
+			}
+
+			if (hasAuto) {
+				updateOreDamageUI();
+			}
 		}
         game.minerSoulPending += game.minerSoulRate * delta / 3600;
     }
+	if (game.auto.upgrade) {
+		let rate = Math.log10(game.level + 10) ** 0.5;
+		autoUpgradeTime += rate * delta;
+		let hasAuto = false;
+		while (rate >= 1) {
+			if (buyUpgrade("normal", "$all")) {
+				hasAuto = true;
+				rate -= 1;
+			} else {
+				rate %= 1;
+			}
+		}
+
+		if (hasAuto) {
+			updateOreDamageUI();
+		}
+	}
 
     updateVisuals();
 }

@@ -35,6 +35,8 @@ function initSave() {
         minerSoulBestOre: 0,
 		minerSoulCash: 0,
 		minerSoulArtifacts: 0,
+
+		auto: Object.fromEntries(Object.keys(autoFunctions).map(k => [k, false])),
 	}
 	for (let cat in upgrades) {
 		game.upgradesBought[cat] = {};

@@ -1,6 +1,6 @@
 
 
-var selectedUpgrade = ["normal", 1]
+var selectedUpgrade = [null, null]
 var currentUpgradePage = 0;
 
 function openUpgradeScreen() {
@@ -148,8 +148,8 @@ function displayUpgrade(type, x) {
 	updateUpgrades();
 }
 
-function buyUpgrade() {
-	let [type, id] = selectedUpgrade;
+function buyUpgrade(type, id) {
+	if (!type) [type, id] = selectedUpgrade;
 	if (id == "$all") {
 		id = getCheapestUpgrade(type);
 		console.log(id);
@@ -176,6 +176,8 @@ function buyUpgrade() {
 		else if (type == "normal" && id == 4)    game.artifactChance = getUpgradeEffect("normal", 4)
 
 		updateUpgrades();
+
+		return true;
 	}
 }
 

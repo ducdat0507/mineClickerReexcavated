@@ -223,8 +223,6 @@ function calculateDamage() {
 	game.idleDamage = Math.round(game.idleDamage)
 
 	game.tapSpeed = game.level >= 5 ? getToolDamage("comp") : 0;
-
-	console.log(game.baseDamage, game.damage, game.activeDamage, game.idleDamage)
 }
 
 function mineOre() {
@@ -278,6 +276,10 @@ function dealDamage(damage, times = 1) {
 	}
 
 	document.getElementById("currentHitPoints").innerHTML = format(currentHitPoints)
+
+	if (game.auto.advance && game.activeDamage - stats.hardness >= stats.hitPoints * 4 ** (stats.transLevel + 1)) {
+		nextOre();
+	}
 }
 
 function lootOre(times = 1) {
@@ -324,7 +326,7 @@ function lootOre(times = 1) {
 		});
 	}
 
-	if (game.currentOre == game.unlockedOres) {
+	if (game.currentOre >= game.unlockedOres) {
 		game.unlockedOres++;
 		game.minerSoulBestOre = Math.max(game.minerSoulBestOre, game.unlockedOres);
 		if (game.level >= 10) {

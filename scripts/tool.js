@@ -103,6 +103,8 @@ function loadToolScreenInfo(tool) {
 		document.getElementById("artifactBottomButton").innerHTML = "Gilding"
 	}
 	document.getElementById("artifactBottomButton").style.display = currentTool == "tool" ? "" : "none";
+
+	document.getElementById("autoScreenButton").style.display = game.minerSoulTotal >= 1e4 ? "" : "none";
 }
 
 function closeToolScreen() {
@@ -110,10 +112,11 @@ function closeToolScreen() {
 	updateOreUI();
 }
 
-function upgradeTool () {
+function upgradeTool (tool) {
+	tool ??= currentTool;
 	let toolCost = 0
-	toolCost = getToolCost(currentTool)
-	if (currentTool == "tool" && game.cash >= toolCost) {
+	toolCost = getToolCost(tool)
+	if (tool == "tool" && game.cash >= toolCost) {
 		game.cash -= toolCost
 
 		updateCurrencies()
@@ -124,7 +127,7 @@ function upgradeTool () {
 
 		loadToolScreenInfo()
 		calculateDamage()
-	} else if (currentTool == "comp" && game.artifacts >= toolCost) {
+	} else if (tool == "comp" && game.artifacts >= toolCost) {
 		game.artifacts -= toolCost
 
 		game.currentCompanion++

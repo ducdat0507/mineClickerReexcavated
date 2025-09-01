@@ -98,8 +98,15 @@ function adjustDivSize() {
     if (aspectRatio > maxAspectRatio) {
       div.style.height = windowHeight + 'px';
       div.style.width = (windowHeight * maxAspectRatio) + 'px';
-			for (i=0;i<document.getElementsByClassName("bottomButton").length;i++) document.getElementsByClassName("bottomButton")[i].style.height = (windowHeight * maxAspectRatio * 0.16) + "px" //Bottom buttons
-			for (i=0;i<document.getElementsByClassName("bottomButton").length;i++) document.getElementsByClassName("bottomButton")[i].style.lineHeight = (windowHeight * maxAspectRatio * 0.16) + "px" //Bottom buttons
+			
+			for (let buttomButton of document.getElementsByClassName("bottomButton")) {
+				buttomButton.style.height = (windowHeight * maxAspectRatio * 0.16) + "px";
+				buttomButton.style.lineHeight = (windowHeight * maxAspectRatio * 0.16) + "px"
+			}
+			for (let thickButton of document.getElementsByClassName("thickButton")) {
+				thickButton.style.height = (windowHeight * maxAspectRatio * 0.16) + "px";
+				thickButton.style.fontSize = (windowHeight * maxAspectRatio * 0.052) + "px"
+			}
 			document.getElementById("toolUpgradeButton").style.height = (windowHeight * maxAspectRatio * 0.24) + "px"
 			document.getElementById("toolUpgradeButton").style.fontSize = (windowHeight * maxAspectRatio * 0.052) + "px"
 			document.getElementById("upgradeButton").style.height = (windowHeight * maxAspectRatio * 0.16) + "px"
@@ -116,11 +123,18 @@ function adjustDivSize() {
     else {
       div.style.width = windowWidth + 'px';
       div.style.height = windowHeight + 'px';
-			for (i=0;i<document.getElementsByClassName("bottomButton").length;i++) document.getElementsByClassName("bottomButton")[i].style.height = (windowWidth * 0.16) + "px" //Bottom buttons
-			for (i=0;i<document.getElementsByClassName("bottomButton").length;i++) document.getElementsByClassName("bottomButton")[i].style.lineHeight = (windowWidth * 0.16) + "px" //Bottom buttons
+			for (let buttomButton of document.getElementsByClassName("bottomButton")) {
+				buttomButton.style.height = (windowWidth * 0.16) + "px";
+				buttomButton.style.lineHeight = (windowWidth * 0.16) + "px"
+			}
+			for (let thickButton of document.getElementsByClassName("thickButton")) {
+				thickButton.style.height = (windowWidth * 0.16) + "px";
+				thickButton.style.fontSize = (windowWidth * 0.052) + "px"
+			}
 			document.getElementById("toolUpgradeButton").style.height = (windowWidth * 0.24) + "px"
 			document.getElementById("toolUpgradeButton").style.fontSize = (windowWidth * 0.052) + "px"
 			document.getElementById("upgradeButton").style.height = (windowWidth * 0.16) + "px"
+			document.getElementById("upgradeButton").style.lineHeight = (windowWidth * 0.16) + "px"
 			document.getElementById("upgradeButton").style.fontSize = (windowWidth * 0.052) + "px"
 			document.getElementById("ascendButton").style.height = (windowWidth * 0.24) + "px"
 			document.getElementById("ascendButton").style.fontSize = (windowWidth * 0.052) + "px"
