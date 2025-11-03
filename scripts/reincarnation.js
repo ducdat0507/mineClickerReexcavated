@@ -19,7 +19,8 @@ function updateReincarnationGain() {
 	minerSoulBreakdown.base = getUpgradeEffect("reincarnation", 3);
 	game.minerSoulRate = minerSoulBreakdown.base;
 
-	minerSoulBreakdown.transcend = Math.floor((game.minerSoulBestOre - 1) / oreNames.length) ** 2 + 1;
+	minerSoulBreakdown.transcend = Math.floor((game.minerSoulBestOre - 1) / oreNames.length);
+	minerSoulBreakdown.transcend = Math.floor(5 ** (minerSoulBreakdown.transcend - 1)) + 1;
 	game.minerSoulRate *= minerSoulBreakdown.transcend;
 
 	minerSoulBreakdown.cash = Math.log10(game.minerSoulCash + 1000) - 2;
