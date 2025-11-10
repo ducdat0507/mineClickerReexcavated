@@ -68,7 +68,7 @@ function tick() {
         game.minerSoulPending += game.minerSoulRate * delta / 3600;
     }
 	if (game.auto.upgrade) {
-		let rate = Math.log10(game.level + 10) ** 0.5;
+		let rate = Math.log10(game.level + 10);
 		autoUpgradeTime += rate * delta;
 		let hasAuto = false;
 		while (rate >= 1) {

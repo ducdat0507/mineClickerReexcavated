@@ -126,7 +126,7 @@ function displayUpgrade(type, x) {
 		document.getElementById("upgradeInfo").innerHTML = "<b>The EZBuy button&trade;</b><br>Purchase the cheapest upgrade:<br>"
 			+ upgrade.title ?? "None";
 		document.getElementById("upgradeButton").innerHTML = (
-			!upgrade ? "Can't buy"
+			!upgrade?.cost ? "Can't buy"
 				: upgrade.costType ? "Buy for " + format(upgrade.cost(amount)) + " " + getUpgradeCurrencyName(upgrade.costType)
 			 	: "Buy for $" + format(upgrade.cost(amount))
 		);
@@ -154,7 +154,6 @@ function buyUpgrade(type, id) {
 	if (!type) [type, id] = selectedUpgrade;
 	if (id == "$all") {
 		id = getCheapestUpgrade(type);
-		console.log(id);
 		if (!id) return;
 		id = id[0];
 	}

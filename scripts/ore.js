@@ -92,11 +92,14 @@ function updateOreDamageUI(stats) {
 	stats ??= getOreStats(game.currentOre);
 	{
 		let chance = 1;
-		let {damage, income, rate} = calculateOreDamage(game.currentOre, game.activeDamage, [
-			...new Array(getUpgradeEffect("normal", 20))
-				.fill(0)
-				.map((_, i) => [chance *= getUpgradeEffect("normal", 14) * 0.75 ** i, 5 ** (i + 1)])
-		]);
+		let {damage, income, rate} = calculateOreDamage(game.currentOre, game.activeDamage, 
+			approximateFactorArray(
+				getUpgradeEffect("reincarnation", 7) ? Infinity : getUpgradeEffect("normal", 20),
+				getUpgradeEffect("normal", 14),
+				getUpgradeEffect("normal", "20a"),
+				5
+			)
+		);
 
 			switch(game.homeStat) {
 				case "breakRate": 
@@ -121,12 +124,15 @@ function updateOreDamageUI(stats) {
 		document.getElementById("currentNetGain").style.color = damage > 0 ? "" : "#f44";
 	}
 	{
-		let chance = 1;
-		let {damage, income, rate} = calculateOreDamage(game.currentOre, game.idleDamage, [
-			...new Array(getUpgradeEffect("normal", 21))
-				.fill(0)
-				.map((_, i) => [chance *= getUpgradeEffect("normal", 15) * 0.75 ** i, 25 ** (i + 1)])
-		]);
+		let {damage, income, rate} = calculateOreDamage(game.currentOre, game.activeDamage, 
+			approximateFactorArray(
+				getUpgradeEffect("reincarnation", 8) ? Infinity : getUpgradeEffect("normal", 21),
+				getUpgradeEffect("normal", 15),
+				getUpgradeEffect("normal", "21a"),
+				25,
+				1e-6 / Math.max(1, game.tapSpeed)
+			)
+		);
 
 		rate /= game.tapSpeed;
 		damage *= game.tapSpeed;
@@ -231,13 +237,14 @@ function mineOre() {
 	let stack = 0;
 	let stackLimit = getUpgradeEffect("reincarnation", 7) ? Infinity : getUpgradeEffect("normal", 20);
 	let chance = getUpgradeEffect("normal", 14);
-	let chanceDecay = getUpgradeEffect("normal", "20a");
+	let chanceDecay = 1 - getUpgradeEffect("normal", "20a");
 	while (stack < stackLimit && Math.random() < chance) {
 		factor *= 5
 		chance *= chanceDecay;
 		stack++;
 	}
 	if (stack) {
+		setMessage(1,"Critical hit!" + (stack > 1 ? " x" + format(stack) : ""));
 		flash("currentHitPoints", "#f88");
 	}
 	dealDamage(damage * factor);
@@ -246,6 +253,7 @@ function mineOre() {
 function doIdleDamage(times) {
 
 	let damage = game.idleDamage;
+	let maxFactor = 0;
 	let factors = doFactors(
 		times, 
 		getUpgradeEffect("normal", 15),
@@ -255,9 +263,7 @@ function doIdleDamage(times) {
 	for (let factor in factors) {
 		factorTimes = factors[factor];
 		dealDamage(damage * 25 ** factor, factorTimes);
-	}
-	if (factors) {
-		flash("currentHitPoints", "#f88");
+		maxFactor = Math.max(maxFactor, factor);
 	}
 }
 
@@ -354,4 +360,20 @@ function lootOre(times = 1) {
 	}
 
 	updateCurrencies();
+}
+
+function approximateFactorArray(cap, chanceBase, chanceDecay, factor, minChance = 1e-6) {
+	if (chanceBase <= 0) return [];
+	let stack = Math.max(0, Math.min(cap, Math.floor(Math.log(chanceBase) / -Math.log(1 - chanceDecay))));
+	let chance = 1;
+	let array = [];
+	while (chance > minChance && stack <= cap)
+	{
+		array.push([
+			chance *= Math.min(1, chanceBase * (1 - chanceDecay) ** stack), 
+			factor ** stack
+		]);
+		stack++;
+	}
+	return array;
 }

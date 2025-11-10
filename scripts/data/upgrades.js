@@ -244,15 +244,15 @@ const upgrades = {
             effect: x => {
                 const lerp = (a, b, x) => a + (b - a) * x;
                 let result = 0.25 * lerp(0.95 ** x, 8 / (x + 1e-6), clamp(x / 20 - 0.5, 0, 1));
-                result /= getUpgradeEffect("reincarnation", "6a")
+                result /= getUpgradeEffect("reincarnation", "7a")
                 return result;
             },
             effectDisplay: x => x < 0.1 ? "/" + formatWhole(1 / x, 1) : formatWhole(x * 100, 1) + "%",
-            visible: () => getUpgradeEffect("reincarnation", 7),
+            visible: () => game.ascensionPoints >= 1500 && getUpgradeEffect("reincarnation", 7),
             req: () => game.level >= 2400,
             reqDisplay: "Level 2,400",
-            cost: x => 1e6 * 10 ** x,
-            costType: "minerSouls",
+            cost: x => 1e6 * 10 ** (x ** 0.8),
+            costType: "artifacts",
         },
         21: {
             row: 0, col: 1,
@@ -260,10 +260,27 @@ const upgrades = {
             desc: "Increase companion strike stack limit<br/>(Chance decays for each crit)",
             effect: x => 1 + x,
             effectDisplay: x => "x" + format(x),
-            visible: () => game.ascensionPoints >= 2000,
+            visible: () => game.ascensionPoints >= 2000 && !getUpgradeEffect("reincarnation", 8),
             req: () => game.level >= 4000,
             reqDisplay: "Level 4,000",
             cost: x => 999e12 * (9999999999 ** x) * 9 ** ((x + 1) ** 4),
+        },
+        "21a": {
+            row: 0, col: 1,
+            title: "Companion swarm",
+            desc: "Increase companion strike stack limit<br/>(Chance decays for each crit)",
+            effect: x => {
+                const lerp = (a, b, x) => a + (b - a) * x;
+                let result = 0.5 * lerp(0.95 ** x, 8 / (x + 1e-6), clamp(x / 20 - 0.5, 0, 1));
+                result /= getUpgradeEffect("reincarnation", "8a")
+                return result;
+            },
+            effectDisplay: x => x < 0.1 ? "/" + formatWhole(1 / x, 1) : formatWhole(x * 100, 1) + "%",
+            visible: () => game.ascensionPoints >= 2000 && getUpgradeEffect("reincarnation", 8),
+            req: () => game.level >= 4000,
+            reqDisplay: "Level 4,000",
+            cost: x => 1e6 * 100 ** (x ** 0.8),
+            costType: "artifacts",
         },
         22: {
             row: 3, col: 2,
@@ -373,7 +390,7 @@ const upgrades = {
             effectDisplay: x => "/" + formatWhole(x, 1),
             req: () => true,
             reqDisplay: "",
-            cost: x => 1e6 * 2 ** (x ** 1.4),
+            cost: x => 1e6 * 2 ** (x ** 1.25),
             costType: "minerSouls",
         },
         7: {
@@ -385,6 +402,41 @@ const upgrades = {
             req: () => true,
             reqDisplay: "",
             cost: x => x ? Infinity : 7500000,
+            costType: "minerSouls",
+        },
+        "7a": {
+            row: 1, col: -1,
+            title: "Dwarf's blessing",
+            desc: 'Further decrease critical tap chance decay',
+            effect: x => 1 + 0.1 * x,
+            visible: () => getUpgradeEffect("reincarnation", 7),
+            effectDisplay: x => "/" + formatWhole(x, 1),
+            req: () => true,
+            reqDisplay: "",
+            cost: x => 2e6 * 3 ** (x ** 1.3),
+            costType: "minerSouls",
+        },
+        8: {
+            row: 1, col: 0,
+            title: "Hyper strike",
+            desc: 'Remove companion strike stack limit and replace "Companion swarm" upgrade\'s effect',
+            single: true,
+            visible: () => getUpgradeEffect("reincarnation", 7) && !getUpgradeEffect("reincarnation", 8),
+            req: () => true,
+            reqDisplay: "",
+            cost: x => x ? Infinity : 20_000_000,
+            costType: "minerSouls",
+        },
+        "8a": {
+            row: 1, col: 0,
+            title: "The Power of Friendship™",
+            desc: 'Further decrease companion strike chance decay',
+            effect: x => 1 + 0.1 * x,
+            visible: () => getUpgradeEffect("reincarnation", 8),
+            effectDisplay: x => "/" + formatWhole(x, 1),
+            req: () => true,
+            reqDisplay: "",
+            cost: x => 4e6 * 3 ** (x ** 1.6),
             costType: "minerSouls",
         },
     }
