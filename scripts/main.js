@@ -86,12 +86,14 @@ function tick() {
 	}
 
     updateVisuals();
+
+	setTimeout(tick, 100);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
     load()
     loadOre(game.currentOre);
     adjustDivSize();
-    setInterval(tick, 50);
+	tick();
     if (!window.isDevVersion || true) setInterval(save, 5000)
 })

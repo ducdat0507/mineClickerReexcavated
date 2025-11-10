@@ -229,10 +229,12 @@ function mineOre() {
 	let damage = game.activeDamage;
 	let factor = 1;
 	let stack = 0;
+	let stackLimit = getUpgradeEffect("reincarnation", 7) ? Infinity : getUpgradeEffect("normal", 20);
 	let chance = getUpgradeEffect("normal", 14);
-	while (stack < getUpgradeEffect("normal", 20) && Math.random() < chance) {
+	let chanceDecay = getUpgradeEffect("normal", "20a");
+	while (stack < stackLimit && Math.random() < chance) {
 		factor *= 5
-		chance *= 0.75;
+		chance *= chanceDecay;
 		stack++;
 	}
 	if (stack) {
@@ -289,13 +291,14 @@ function lootOre(times = 1) {
 		times,
 		getUpgradeEffect("normal", 3),
 		getUpgradeEffect("normal", 13),
-		getUpgradeEffect("normal", 9)
+		getUpgradeEffect("reincarnation", 6) ? Infinity : getUpgradeEffect("normal", 9)
 	)
 	let maxFactor = Object.keys(factors).at(-1) ?? 0;
 	
 	let cashGain = 0, artifactGain = 0;
+	let cashFactorEffect = getUpgradeEffect("normal", "9a")
 	for (let factor in factors) {
-		cashGain += 5 ** factor * factors[factor];
+		cashGain += cashFactorEffect ** factor * factors[factor];
 		artifactGain += getArtifactGain(factor) * factors[factor];
 	}
 	cashGain *= stats.value * getUpgradeEffect("reincarnation", 1);

@@ -92,9 +92,21 @@ const upgrades = {
             desc: "Increase ore duplication stack limit<br/>(Chance decays for each duplication)",
             effect: x => x + 1,
             effectDisplay: x => format(x) + "x",
+            visible: () => !getUpgradeEffect("reincarnation", 6),
+            req: () => true,
+            cost: x => 1e9 * 100 ** x,
+        },
+        "9a": {
+            row: 1, col: 2,
+            title: "Super duplication",
+            desc: "Increase ore duplication value",
+            effect: x => 5 + 0.1 * x,
+            effectDisplay: x => formatWhole(x, 1) + "x",
+            visible: () => getUpgradeEffect("reincarnation", 6),
             req: () => game.level >= 150,
             reqDisplay: "Level 150",
-            cost: x => 1e9 * 100 ** x,
+            cost: x => 1000 ** (x ** 0.5),
+            costType: "artifacts",
         },
         10: {
             row: 1, col: 0,
@@ -132,7 +144,9 @@ const upgrades = {
             desc: "Decrease ore duplicating chance decay",
             effect: x => {
                 const lerp = (a, b, x) => a + (b - a) * x;
-                return 0.5 * lerp(0.95 ** x, 8 / (x + 1e-6), clamp(x / 20 - 0.5, 0, 1))
+                let result = 0.5 * lerp(0.95 ** x, 8 / (x + 1e-6), clamp(x / 20 - 0.5, 0, 1));
+                result /= getUpgradeEffect("reincarnation", "6a")
+                return result;
             },
             effectDisplay: x => x < 0.1 ? "/" + formatWhole(1 / x, 1) : formatWhole(x * 100, 1) + "%",
             visible: () => game.ascensionPoints > 0,
@@ -218,10 +232,26 @@ const upgrades = {
             desc: "Increase critical tap stack limit<br/>(Chance decays for each crit)",
             effect: x => 1 + x,
             effectDisplay: x => "x" + format(x),
-            visible: () => game.ascensionPoints >= 1500,
+            visible: () => game.ascensionPoints >= 1500 && !getUpgradeEffect("reincarnation", 7),
             req: () => game.level >= 2400,
             reqDisplay: "Level 2,400",
             cost: x => 999e9 * (99999 ** x) * 9 ** ((x + 1) ** 2),
+        },
+        "20a": {
+            row: 0, col: 2,
+            title: "Bullseye touch",
+            desc: "Decrease critical tap chance decay",
+            effect: x => {
+                const lerp = (a, b, x) => a + (b - a) * x;
+                let result = 0.25 * lerp(0.95 ** x, 8 / (x + 1e-6), clamp(x / 20 - 0.5, 0, 1));
+                result /= getUpgradeEffect("reincarnation", "6a")
+                return result;
+            },
+            effectDisplay: x => x < 0.1 ? "/" + formatWhole(1 / x, 1) : formatWhole(x * 100, 1) + "%",
+            visible: () => getUpgradeEffect("reincarnation", 7),
+            req: () => game.level >= 2400,
+            reqDisplay: "Level 2,400",
+            cost: x => 1e6 * 10 ** x,
         },
         21: {
             row: 0, col: 1,
@@ -320,6 +350,40 @@ const upgrades = {
             req: () => true,
             reqDisplay: "",
             cost: x => 250 * 3 ** (x ** 1.2),
+            costType: "minerSouls",
+        },
+        6: {
+            row: 1, col: -2,
+            title: "Hyper duplicated",
+            desc: 'Remove ore duplication stack limit and replace "Super duplication" upgrade\'s effect',
+            single: true,
+            visible: () => game.minerSoulTotal > 1e6 && !getUpgradeEffect("reincarnation", 6),
+            req: () => true,
+            reqDisplay: "",
+            cost: x => x ? Infinity : 2500000,
+            costType: "minerSouls",
+        },
+        "6a": {
+            row: 1, col: -2,
+            title: "Miner's blessing",
+            desc: 'Further decrease ore duplication chance decay',
+            effect: x => 1 + 0.1 * x,
+            visible: () => getUpgradeEffect("reincarnation", 6),
+            effectDisplay: x => "/" + formatWhole(x, 1),
+            req: () => true,
+            reqDisplay: "",
+            cost: x => 1e6 * 2 ** (x ** 1.4),
+            costType: "minerSouls",
+        },
+        7: {
+            row: 1, col: -1,
+            title: "Hyper critical",
+            desc: 'Remove critical tap stack limit and replace "Bullseye touch" upgrade\'s effect',
+            single: true,
+            visible: () => getUpgradeEffect("reincarnation", 6) && !getUpgradeEffect("reincarnation", 7),
+            req: () => true,
+            reqDisplay: "",
+            cost: x => x ? Infinity : 7500000,
             costType: "minerSouls",
         },
     }

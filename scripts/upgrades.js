@@ -101,7 +101,7 @@ function closeUpgradeScreen() {
 function getUpgradeEffect(type, x) {
 	let upgrade = upgrades[type]?.[x];
 	let amount = game.upgradesBought[type]?.[x] ?? 0;
-	return upgrade.effect(amount);
+	return upgrade.effect?.(amount) || amount;
 }
 
 function getUpgradeCurrencyName(name) {
@@ -132,8 +132,10 @@ function displayUpgrade(type, x) {
 		);
 	} else if (upgrade.req()) {
 		selectedUpgrade = [type, x]
-		document.getElementById("upgradeInfo").innerHTML = "<b>" + upgrade.title + "</b><br>" + 
-			upgrade.effectDisplay(upgrade.effect(amount)) + " -> " + upgrade.effectDisplay(upgrade.effect(amount + 1)) + "<br>" + 
+		document.getElementById("upgradeInfo").innerHTML = "<b>" + upgrade.title + "</b><br>" + (
+				upgrade.single ? "" 
+					: upgrade.effectDisplay(upgrade.effect(amount)) + " -> " + upgrade.effectDisplay(upgrade.effect(amount + 1)) + "<br>"
+			) + 
 			upgrade.desc;
 		document.getElementById("upgradeButton").innerHTML = (
 			upgrade.costType
