@@ -252,6 +252,7 @@ const upgrades = {
             req: () => game.level >= 2400,
             reqDisplay: "Level 2,400",
             cost: x => 1e6 * 10 ** x,
+            costType: "minerSouls",
         },
         21: {
             row: 0, col: 1,
